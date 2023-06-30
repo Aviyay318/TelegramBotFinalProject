@@ -51,7 +51,7 @@ this.panel = panel;
        int counter = 0;
         SendMessage sendMessage= new SendMessage();
         long chatId= getChatID(update);
-        System.out.println(update.getMessage().getFrom().getFirstName() );
+       // System.out.println(update.getMessage().getFrom().getFirstName() );
         sendMessage.setChatId(chatId);
         int sum;
         try {
@@ -61,7 +61,7 @@ this.panel = panel;
         }
 
         this.mostUserP.put(chatId,sum);
-        if (!this.chatIds.keySet().contains(chatId)){
+        if (!this.chatIds.containsKey(chatId)){
             counter = this.counterMap.get("general")+1;
             this.counterMap.put("general",counter);
             this.chatIds.put(chatId,update.getMessage().getFrom().getFirstName() );
@@ -140,13 +140,14 @@ this.panel = panel;
               this.panel.setTotalRequestsNumberText(String.valueOf(this.counterMap.values().stream().reduce(Integer::sum).orElse(0)));
               this.panel.setMostPopularActivityName(set());
               this.panel.setTotalUsersNumberText(String.valueOf(this.chatIds.size()));
-              this.panel.setMostActiveUserNameText(this.chatIds.get(get()));
+             // this.panel.setMostActiveUserNameText(this.chatIds.get(get()));
                 }
+
             }).start();
 
 
     }
-    private Long get(){
+    private synchronized Long get(){
         return this.mostUserP.entrySet()
                 .stream()
                 .max(Map.Entry.comparingByValue())

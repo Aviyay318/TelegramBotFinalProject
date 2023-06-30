@@ -13,6 +13,7 @@ public class ApiManager {
     public String jokeApi(String category){
           GetRequest getRequest = Unirest.get("https://v2.jokeapi.dev/joke/"+category+"?format=txt");
           try {
+              System.out.println(getRequest.asString().getBody());
               return getRequest.asString().getBody();
            }catch (Exception e) {
         throw new RuntimeException(e);
