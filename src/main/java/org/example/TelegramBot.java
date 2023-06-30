@@ -9,16 +9,31 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 public class TelegramBot  extends TelegramLongPollingBot {
     private List<Long> chatIds;
     private String [] api;
     private ApiManager apiManager;
+    private HashMap<String,Integer> counterMap;
+    private int counter;
 
     public TelegramBot(String [] api){
         this.chatIds = new ArrayList<>();
         this.api = api;
         this.apiManager = new ApiManager();
+        this.counterMap = new HashMap<>();
+        this.counterMap.put("general",0);
+        this.counterMap.put("Cats",0);
+        this.counterMap.put("Jokes",0);
+        this.counterMap.put("AdviceSlip",0);
+        this.counterMap.put("Numbers",0);
+       // this.counterMap.put("general",0);
+
+
+
+
+        this.counter = 0;
     }
     @Override
     public String getBotUsername() {
@@ -32,10 +47,13 @@ public class TelegramBot  extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
+       int counter = 0;
         SendMessage sendMessage= new SendMessage();
         long chatId= getChatID(update);
         sendMessage.setChatId(chatId);
         if (!this.chatIds.contains(chatId)){
+            counter = this.counterMap.get("general")+1;
+            this.counterMap.put("general",counter);
             this.chatIds.add(chatId);
             sendMessage.setText("Choose Api: ");
             InlineKeyboardButton sunday= new InlineKeyboardButton(api[0]);
@@ -44,15 +62,21 @@ public class TelegramBot  extends TelegramLongPollingBot {
             monday.setCallbackData(api[1]);
             InlineKeyboardButton tuesday= new InlineKeyboardButton(api[2]);
             tuesday.setCallbackData(api[2]);
-            List<InlineKeyboardButton> topRow = Arrays.asList(sunday,monday, tuesday);
+            InlineKeyboardButton s= new InlineKeyboardButton(api[3]);
+            s.setCallbackData(api[3]);
+            List<InlineKeyboardButton> topRow = Arrays.asList(sunday,monday, tuesday,s);
             List<List<InlineKeyboardButton>> keyboard= Arrays.asList(topRow);
             InlineKeyboardMarkup inlineKeyboardMarkup= new InlineKeyboardMarkup();
             inlineKeyboardMarkup.setKeyboard(keyboard);
             sendMessage.setReplyMarkup(inlineKeyboardMarkup);
         } else {
             if(update.getCallbackQuery().getData().equals("Cats")){
+                counter = this.counterMap.get("Cats")+1;
+                this.counterMap.put("Cats",counter);
                 sendMessage.setText(this.apiManager.catsFactApi());
             } else if (update.getCallbackQuery().getData().equals("Jokes")){
+                counter = this.counterMap.get("Jokes")+1;
+                this.counterMap.put("Jokes",counter);
 //                InlineKeyboardButton programming= new InlineKeyboardButton("Programming");
 //                programming.setCallbackData("Programming");
 //                InlineKeyboardButton misc = new InlineKeyboardButton("Misc");
@@ -73,7 +97,13 @@ public class TelegramBot  extends TelegramLongPollingBot {
 //                inlineKeyboardMarkup.setKeyboard(keyboard);
 //                sendMessage.setReplyMarkup(inlineKeyboardMarkup);
                 sendMessage.setText(this.apiManager.jokeApi("Any"));
+            } else if (update.getCallbackQuery().getData().equals("AdviceSlip")){
+                counter = this.counterMap.get("AdviceSlip")+1;
+                this.counterMap.put("AdviceSlip",counter);
+                sendMessage.setText(this.apiManager.adviceSlipApi());
             }else {
+                counter = this.counterMap.get("Numbers")+1;
+                this.counterMap.put("Numbers",counter);
                 sendMessage.setText(this.apiManager.numberApi());
             }
         }
@@ -83,7 +113,7 @@ public class TelegramBot  extends TelegramLongPollingBot {
             throw new RuntimeException(e);
         }
 
-
+        System.out.println(this.counterMap);
     }
     public long getChatID(Update update){
         long update1=0;
