@@ -26,7 +26,7 @@ public class TelegramBot  extends TelegramLongPollingBot {
         this.counterMap.put("general",0);
         this.counterMap.put("Cats",0);
         this.counterMap.put("Jokes",0);
-        this.counterMap.put("AdviceSlip",0);
+        this.counterMap.put("Activities",0);
         this.counterMap.put("Numbers",0);
         this.mostUserP = new HashMap<>();
        // this.counterMap.put("general",0);
@@ -107,10 +107,10 @@ this.panel = panel;
 //                inlineKeyboardMarkup.setKeyboard(keyboard);
 //                sendMessage.setReplyMarkup(inlineKeyboardMarkup);
                 sendMessage.setText(this.apiManager.jokeApi("Any"));
-            } else if (update.getCallbackQuery().getData().equals("AdviceSlip")){
-                counter = this.counterMap.get("AdviceSlip")+1;
-                this.counterMap.put("AdviceSlip",counter);
-                sendMessage.setText(this.apiManager.adviceSlipApi());
+            } else if (update.getCallbackQuery().getData().equals("Activities")){
+                counter = this.counterMap.get("Activities")+1;
+                this.counterMap.put("Activities",counter);
+                sendMessage.setText(this.apiManager.activitiesApi());
             }else {
                 counter = this.counterMap.get("Numbers")+1;
                 this.counterMap.put("Numbers",counter);
@@ -140,7 +140,7 @@ this.panel = panel;
               this.panel.setTotalRequestsNumberText(String.valueOf(this.counterMap.values().stream().reduce(Integer::sum).orElse(0)));
               this.panel.setMostPopularActivityName(set());
               this.panel.setTotalUsersNumberText(String.valueOf(this.chatIds.size()));
-             // this.panel.setMostActiveUserNameText(this.chatIds.get(get()));
+            //  this.panel.setMostActiveUserNameText(this.chatIds.get(get()));
                 }
 
             }).start();

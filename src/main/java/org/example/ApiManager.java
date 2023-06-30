@@ -10,6 +10,23 @@ public class ApiManager {
     public ApiManager() {
     }
 
+
+    public String activitiesApi(){
+        Bored bored;
+        try {
+            GetRequest getRequest = Unirest.get("https://www.boredapi.com/api/activity");
+            System.out.println(getRequest.asString().getBody());
+            HttpResponse<String> response = getRequest.asString();
+            String json = response.getBody();
+            ObjectMapper objectMapper = new ObjectMapper();
+            bored = objectMapper.readValue(json, new TypeReference<>(){});
+            System.out.println(bored);
+        }catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return bored.toString();
+    }
+
     public String jokeApi(String category){
           GetRequest getRequest = Unirest.get("https://v2.jokeapi.dev/joke/"+category+"?format=txt");
           try {
