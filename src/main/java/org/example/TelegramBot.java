@@ -1,13 +1,20 @@
 package org.example;
 
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.send.SendDice;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class TelegramBot  extends TelegramLongPollingBot {
     private Map<Long,String> chatIds;
@@ -28,6 +35,7 @@ public class TelegramBot  extends TelegramLongPollingBot {
         this.counterMap.put("Jokes",0);
         this.counterMap.put("Activities",0);
         this.counterMap.put("Numbers",0);
+        this.counterMap.put("RandomDog",0);
         this.mostUserP = new HashMap<>();
        // this.counterMap.put("general",0);
 this.panel = panel;
@@ -66,19 +74,23 @@ this.panel = panel;
             this.counterMap.put("general",counter);
             this.chatIds.put(chatId,update.getMessage().getFrom().getFirstName() );
             sendMessage.setText("Choose Api: ");
-            InlineKeyboardButton sunday= new InlineKeyboardButton(api[0]);
-            sunday.setCallbackData(api[0]);
-            InlineKeyboardButton monday = new InlineKeyboardButton(api[1]);
-            monday.setCallbackData(api[1]);
-            InlineKeyboardButton tuesday= new InlineKeyboardButton(api[2]);
-            tuesday.setCallbackData(api[2]);
-            InlineKeyboardButton s= new InlineKeyboardButton(api[3]);
-            s.setCallbackData(api[3]);
-            List<InlineKeyboardButton> topRow = Arrays.asList(sunday,monday, tuesday,s);
-            List<List<InlineKeyboardButton>> keyboard= Arrays.asList(topRow);
-            InlineKeyboardMarkup inlineKeyboardMarkup= new InlineKeyboardMarkup();
+            List<String> apiList = Arrays.asList(api);
+            List<InlineKeyboardButton> buttons = IntStream.range(0, 5)
+                    .mapToObj(i -> {
+                        InlineKeyboardButton button = new InlineKeyboardButton(apiList.get(i));
+                        button.setCallbackData(apiList.get(i));
+                        return button;
+                    })
+                    .collect(Collectors.toList());
+
+            List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
+            keyboard.add(buttons);
+            InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
             inlineKeyboardMarkup.setKeyboard(keyboard);
+
             sendMessage.setReplyMarkup(inlineKeyboardMarkup);
+            sendPhoto.setReplyMarkup(inlineKeyboardMarkup);
+
         } else {
             if(update.getCallbackQuery().getData().equals("Cats")){
                 counter = this.counterMap.get("Cats")+1;
@@ -87,31 +99,20 @@ this.panel = panel;
             } else if (update.getCallbackQuery().getData().equals("Jokes")){
                 counter = this.counterMap.get("Jokes")+1;
                 this.counterMap.put("Jokes",counter);
-//                InlineKeyboardButton programming= new InlineKeyboardButton("Programming");
-//                programming.setCallbackData("Programming");
-//                InlineKeyboardButton misc = new InlineKeyboardButton("Misc");
-//                misc.setCallbackData("Misc");
-//                InlineKeyboardButton dark= new InlineKeyboardButton("Dark");
-//                dark.setCallbackData("Dark");
-//                InlineKeyboardButton pun= new InlineKeyboardButton("Pun");
-//                pun.setCallbackData("Pun");
-//                InlineKeyboardButton spooky = new InlineKeyboardButton("Spooky");
-//                spooky.setCallbackData("Spooky");
-//                InlineKeyboardButton christmas = new InlineKeyboardButton("Christmas");
-//                christmas.setCallbackData("Christmas");
-//                InlineKeyboardButton any = new InlineKeyboardButton("Any");
-//                any.setCallbackData("Any");
-//                List<InlineKeyboardButton> topRow = Arrays.asList(programming,misc, dark,pun,spooky,christmas,any);
-//                List<List<InlineKeyboardButton>> keyboard= Arrays.asList(topRow);
-//                InlineKeyboardMarkup inlineKeyboardMarkup= new InlineKeyboardMarkup();
-//                inlineKeyboardMarkup.setKeyboard(keyboard);
-//                sendMessage.setReplyMarkup(inlineKeyboardMarkup);
                 sendMessage.setText(this.apiManager.jokeApi("Any"));
             } else if (update.getCallbackQuery().getData().equals("Activities")){
                 counter = this.counterMap.get("Activities")+1;
                 this.counterMap.put("Activities",counter);
                 sendMessage.setText(this.apiManager.activitiesApi());
-            }else {
+            }else if (update.getCallbackQuery().getData().equals("RandomDog")){
+                counter = this.counterMap.get("RandomDog")+1;
+                this.counterMap.put("RandomDog",counter);
+                this.apiManager.dogApi();
+                File file = new File("res/dog/randomDog.jpg");
+                InputFile randomAhhDog = new InputFile(file);
+                sendPhoto.setPhoto(randomAhhDog);
+            }
+            else {
                 counter = this.counterMap.get("Numbers")+1;
                 this.counterMap.put("Numbers",counter);
                 sendMessage.setText(this.apiManager.numberApi());
@@ -135,21 +136,20 @@ this.panel = panel;
         return update1;
     }
     public void update(){
-            new Thread(()->{
-                while (true){
-              this.panel.setTotalRequestsNumberText(String.valueOf(this.counterMap.values().stream().reduce(Integer::sum).orElse(0)));
-              this.panel.setMostPopularActivityName(set());
-              this.panel.setTotalUsersNumberText(String.valueOf(this.chatIds.size()));
-            //  this.panel.setMostActiveUserNameText(this.chatIds.get(get()));
-                }
+        new Thread(()->{
+            while (true){
+                this.panel.setTotalRequestsNumberText(String.valueOf(this.counterMap.values().stream().reduce(Integer::sum).orElse(0)));
+                this.panel.setMostPopularActivityName(set());
+                this.panel.setTotalUsersNumberText(String.valueOf(this.chatIds.size()));
+                this.panel.setMostActiveUserNameText(this.chatIds.get(get()));
+            }
 
             }).start();
 
 
     }
-    private synchronized Long get(){
-        return this.mostUserP.entrySet()
-                .stream()
+    private  Long get(){
+        return new HashMap<>(this.mostUserP).entrySet().stream()
                 .max(Map.Entry.comparingByValue())
                 .map(Map.Entry::getKey)
                 .orElse(Long.valueOf(0));
@@ -166,3 +166,22 @@ this.panel = panel;
         }
     }
 }
+//                InlineKeyboardButton programming= new InlineKeyboardButton("Programming");
+//                programming.setCallbackData("Programming");
+//                InlineKeyboardButton misc = new InlineKeyboardButton("Misc");
+//                misc.setCallbackData("Misc");
+//                InlineKeyboardButton dark= new InlineKeyboardButton("Dark");
+//                dark.setCallbackData("Dark");
+//                InlineKeyboardButton pun= new InlineKeyboardButton("Pun");
+//                pun.setCallbackData("Pun");
+//                InlineKeyboardButton spooky = new InlineKeyboardButton("Spooky");
+//                spooky.setCallbackData("Spooky");
+//                InlineKeyboardButton christmas = new InlineKeyboardButton("Christmas");
+//                christmas.setCallbackData("Christmas");
+//                InlineKeyboardButton any = new InlineKeyboardButton("Any");
+//                any.setCallbackData("Any");
+//                List<InlineKeyboardButton> topRow = Arrays.asList(programming,misc, dark,pun,spooky,christmas,any);
+//                List<List<InlineKeyboardButton>> keyboard= Arrays.asList(topRow);
+//                InlineKeyboardMarkup inlineKeyboardMarkup= new InlineKeyboardMarkup();
+//                inlineKeyboardMarkup.setKeyboard(keyboard);
+//                sendMessage.setReplyMarkup(inlineKeyboardMarkup);

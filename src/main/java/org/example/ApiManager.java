@@ -5,6 +5,10 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.request.GetRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.telegram.telegrambots.meta.api.objects.File;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
+
+import java.awt.*;
 
 public class ApiManager {
     public ApiManager() {
@@ -36,6 +40,22 @@ public class ApiManager {
         throw new RuntimeException(e);
     }
 
+    }
+    public void dogApi(){
+        RandomDog randomDog;
+        try {
+            GetRequest getRequest = Unirest.get("https://dog.ceo/api/breeds/image/random");
+            //System.out.println(getRequest.asString().getBody());
+            HttpResponse<String> response = getRequest.asString();
+            String json = response.getBody();
+            ObjectMapper objectMapper = new ObjectMapper();
+            randomDog = objectMapper.readValue(json, new TypeReference<>() {
+            });
+            randomDog.getRandomDogLocation();
+
+        }catch (Exception e) {
+                throw new RuntimeException(e);
+            }
     }
 
     public String catsFactApi(){

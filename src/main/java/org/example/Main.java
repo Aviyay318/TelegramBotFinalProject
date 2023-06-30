@@ -9,7 +9,7 @@ public class Main {
      new Window();
         try {
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
-            botsApi.registerBot(new TelegramBot(new String[]{"Cats","Jokes","Numbers","Activities"},Constants.PANEL));
+            botsApi.registerBot(new TelegramBot(new String[]{"Cats","Jokes","Numbers","Activities","RandomDog"},Constants.PANEL));
         }catch (TelegramApiException e){
             throw new RuntimeException();
         }
