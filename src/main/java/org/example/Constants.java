@@ -20,4 +20,12 @@ public class Constants {
     public static final int HISTORY_TITLE_HEIGHT=100;
     public static final int SPACING=50;
     public static final Panel PANEL = new Panel(0, 0, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
+    public static final int FIRST_NUMBER_X=280;
+    public static final int FIRST_NUMBER_Y=150;
+    public static final int FIRST_NUMBER_WIDTH=200;
+    public static final int FIRST_NUMBER_HEIGHT=100;
+    public static final int FONT_SIZE=17;
+    public static final int CHECKBOX_X=20;
+    public static final int CHECKBOX_Y=500;
+
 }
