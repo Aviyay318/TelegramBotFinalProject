@@ -157,8 +157,6 @@ this.panel = panel;
     private String set(){
         if(this.counterMap.values().stream().reduce(Integer::sum).orElse(0)==0){
             return  "No activity found";
-//        if (allActivity.values().stream().anyMatch(count -> count <= 0)) {
-//            return "No activity found";
         } else {
             return counterMap.entrySet()
                     .stream()
