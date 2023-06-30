@@ -37,8 +37,8 @@ public class TelegramBot  extends TelegramLongPollingBot {
         this.counterMap.put("Numbers",0);
         this.counterMap.put("RandomDog",0);
         this.mostUserP = new HashMap<>();
-       // this.counterMap.put("general",0);
-this.panel = panel;
+        // this.counterMap.put("general",0);
+        this.panel = panel;
         update();
 
 
@@ -56,18 +56,19 @@ this.panel = panel;
 
     @Override
     public void onUpdateReceived(Update update) {
-       int counter = 0;
+        int counter = 0;
         SendMessage sendMessage= new SendMessage();
+        SendPhoto sendPhoto = new SendPhoto();
         long chatId= getChatID(update);
-       // System.out.println(update.getMessage().getFrom().getFirstName() );
+        // System.out.println(update.getMessage().getFrom().getFirstName() );
         sendMessage.setChatId(chatId);
+        sendPhoto.setChatId(chatId);
         int sum;
         try {
-             sum = this.mostUserP.get(chatId) + 1;
+            sum = this.mostUserP.get(chatId) + 1;
         }catch (Exception e){
-            sum =0;
+            sum = 0;
         }
-
         this.mostUserP.put(chatId,sum);
         if (!this.chatIds.containsKey(chatId)){
             counter = this.counterMap.get("general")+1;
@@ -90,7 +91,6 @@ this.panel = panel;
 
             sendMessage.setReplyMarkup(inlineKeyboardMarkup);
             sendPhoto.setReplyMarkup(inlineKeyboardMarkup);
-
         } else {
             if(update.getCallbackQuery().getData().equals("Cats")){
                 counter = this.counterMap.get("Cats")+1;
@@ -109,8 +109,10 @@ this.panel = panel;
                 this.counterMap.put("RandomDog",counter);
                 this.apiManager.dogApi();
                 File file = new File("res/dog/randomDog.jpg");
+                System.out.println(file.getName());
                 InputFile randomAhhDog = new InputFile(file);
                 sendPhoto.setPhoto(randomAhhDog);
+                //System.out.println(sendPhoto);
             }
             else {
                 counter = this.counterMap.get("Numbers")+1;
@@ -120,8 +122,20 @@ this.panel = panel;
         }
         try {
             execute(sendMessage);
+            System.out.println(sendMessage);
+
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
+        }
+        //TODO: I HAD TO ADD FINALLY BEFORE THE EXECUTE(SENDPHOTO) BECAUSE JAVA DIDNT EXECUTE IT PROPERLY.
+        finally {
+            try {
+                execute(sendPhoto);
+            } catch (TelegramApiException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println(sendPhoto);
+
         }
 
         System.out.println(this.counterMap);
@@ -144,7 +158,7 @@ this.panel = panel;
                 this.panel.setMostActiveUserNameText(this.chatIds.get(get()));
             }
 
-            }).start();
+        }).start();
 
 
     }
@@ -152,7 +166,7 @@ this.panel = panel;
         return new HashMap<>(this.mostUserP).entrySet().stream()
                 .max(Map.Entry.comparingByValue())
                 .map(Map.Entry::getKey)
-                .orElse(Long.valueOf(0));
+                .orElse(0L);
     }
     private String set(){
         if(this.counterMap.values().stream().reduce(Integer::sum).orElse(0)==0){

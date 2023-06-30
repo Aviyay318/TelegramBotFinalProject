@@ -5,10 +5,6 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.request.GetRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.telegram.telegrambots.meta.api.objects.File;
-import org.telegram.telegrambots.meta.api.objects.InputFile;
-
-import java.awt.*;
 
 public class ApiManager {
     public ApiManager() {
@@ -49,9 +45,8 @@ public class ApiManager {
             HttpResponse<String> response = getRequest.asString();
             String json = response.getBody();
             ObjectMapper objectMapper = new ObjectMapper();
-            randomDog = objectMapper.readValue(json, new TypeReference<>() {
-            });
-            randomDog.getRandomDogLocation();
+            randomDog = objectMapper.readValue(json, new TypeReference<>() {});
+            randomDog.setUrlToPhotoOfRandomDog();
 
         }catch (Exception e) {
                 throw new RuntimeException(e);

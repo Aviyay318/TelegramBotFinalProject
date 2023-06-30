@@ -8,7 +8,7 @@ public class Window extends JFrame {
         this.setResizable(false);
         this.setLayout(null);
         this.setLocationRelativeTo(null);
-        this.setTitle("Telegram API Project");
+        this.setTitle("Telegram Bot Manager");
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.add(Constants.PANEL);
         this.setVisible(true);

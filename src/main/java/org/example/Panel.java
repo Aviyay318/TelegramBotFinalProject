@@ -1,13 +1,11 @@
 package org.example;
 
-import org.jvnet.hk2.internal.Collector;
-import org.telegram.telegrambots.meta.TelegramBotsApi;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+import org.checkerframework.checker.units.qual.C;
 
 import javax.swing.*;
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +20,9 @@ public class Panel extends JPanel {
     private int width;
     private int height;
 
+    private Font font;
+
+    private JLabel title;
 
     private JLabel totalRequestsNumber;
 
@@ -32,6 +33,8 @@ public class Panel extends JPanel {
     private List<JCheckBox> checkBoxes;
     private int counterToThree;
     private boolean canSelectMore;
+
+    private JLabel apiChooserLabel;
 
     private JCheckBox catFactsApi;
     private JCheckBox jokesApi;
@@ -51,8 +54,12 @@ public class Panel extends JPanel {
         this.checkBoxes = new ArrayList<>();
         this.counterToThree=0;
         this.canSelectMore=true;
+        setNewFont();
 
-        titleLabel();
+        setTitle();
+        setBlueTitle();
+
+        setStatisticsLabel();
         createBackground();
 
         totalRequestsNumberLabel();
@@ -70,32 +77,62 @@ public class Panel extends JPanel {
         historyTitle();
         historyActivityArea();
 
-       catFactsCheckBox();
-       jokesCheckBox();
-       numbersCheckBox();
-       activitiesCheckBox();
-       randomDogCheckBox();
+        addApiChooserLabel();
+
+        catFactsCheckBox();
+        jokesCheckBox();
+        numbersCheckBox();
+        activitiesCheckBox();
+        randomDogCheckBox();
 
 
 
 
     }
 
+    private void setNewFont(){
+        try {
+            this.font = Font.createFont(Font.TRUETYPE_FONT, new File("res/lilgrotesk-bold.otf")).deriveFont(40f);
+        } catch (FontFormatException | IOException e) {
+            throw new RuntimeException(e);
+        }
 
+    }
+    //TODO: This is the general title = telegram bot manager.
+    private void setTitle(){
+        this.title = new JLabel("Telegram Bot Manager");
+        this.title.setBounds(Constants.TITLE_X,Constants.TITLE_Y,Constants.TITLE_WIDTH,Constants.TITLE_HEIGHT);
+        this.title.setFont(this.font.deriveFont(50f));
+        this.title.setForeground(Color.white);
+        this.title.setOpaque(false);
+        this.add(this.title);
+        this.title.setVisible(true);
+    }
+    //TODO: Added blue outline to the JLabel to make it look cooler idk
+    private void setBlueTitle(){
+        JLabel blue = new JLabel("Telegram Bot Manager");
+        blue.setBounds(Constants.TITLE_X+1,Constants.TITLE_Y,Constants.TITLE_WIDTH,Constants.TITLE_HEIGHT);
+        blue.setFont(this.font.deriveFont(50.1f));
+        blue.setForeground(new Color(75,212,255));
+        blue.setOpaque(false);
+        this.add(blue);
+        blue.setVisible(true);
+    }
 
-    private void titleLabel(){
-        JLabel title=new JLabel("Statistics");
-        title.setBounds(Constants.TITLE_X,Constants.TITLE_Y,Constants.TITLE_WIDTH,Constants.TITLE_HEIGHT);
-        title.setFont(new Font(Constants.FONT, Font.BOLD,40));
-        title.setOpaque(false);
-        this.add(title);
-        title.setVisible(true);
+    //TODO: Changed setTitleLabel to setStatisticsLabel since we have a more general title label
+    private void setStatisticsLabel(){
+        JLabel statisticsLabel=new JLabel("Statistics");
+        statisticsLabel.setBounds(Constants.STATISTICS_X,Constants.STATISTICS_Y,Constants.STATISTICS_WIDTH,Constants.STATISTICS_HEIGHT);
+        statisticsLabel.setFont(this.font.deriveFont(30f));
+        statisticsLabel.setOpaque(false);
+        this.add(statisticsLabel);
+        statisticsLabel.setVisible(true);
     }
 
     private void totalRequestsNumberLabel(){
         this.totalRequestsNumber=new JLabel("0");
         this.totalRequestsNumber.setBounds(Constants.FIRST_NUMBER_X,Constants.FIRST_NUMBER_Y,Constants.FIRST_NUMBER_WIDTH,Constants.FIRST_NUMBER_HEIGHT);
-        this.totalRequestsNumber.setFont(new Font("Arial",Font.BOLD,Constants.FONT_SIZE));
+        this.totalRequestsNumber.setFont(this.font.deriveFont(Constants.FONT_SIZE));
         this.totalRequestsNumber.setOpaque(false);
         this.add(this.totalRequestsNumber);
         this.totalRequestsNumber.setVisible(true);
@@ -104,7 +141,7 @@ public class Panel extends JPanel {
     private void totalRequestsLabel(){
         JLabel totalRequests=new JLabel("Total Requests From The Bot: ");
         totalRequests.setBounds(Constants.REQUEST_LABEL_X,Constants.REQUEST_LABEL_Y,Constants.REQUEST_LABEL_WIDTH+10,Constants.REQUEST_LABEL_HEIGHT);
-        totalRequests.setFont(new Font(Constants.FONT,Font.BOLD,Constants.FONT_SIZE));
+        totalRequests.setFont(this.font.deriveFont(Constants.FONT_SIZE));
         totalRequests.setOpaque(false);
         this.add(totalRequests);
         totalRequests.setVisible(true);
@@ -113,7 +150,7 @@ public class Panel extends JPanel {
     private void totalUsersNumberLabel(){
         this.totalUsersNumber=new JLabel("1");
         this.totalUsersNumber.setBounds(this.totalRequestsNumber.getX(),this.totalRequestsNumber.getY()+Constants.Y_LABEL_SPACING,this.totalRequestsNumber.getWidth(),this.totalRequestsNumber.getHeight());
-        this.totalUsersNumber.setFont(new Font("Arial", Font.BOLD,Constants.FONT_SIZE));
+        this.totalUsersNumber.setFont(this.font.deriveFont(Constants.FONT_SIZE));
         this.totalUsersNumber.setOpaque(false);
         this.add(this.totalUsersNumber);
         this.totalUsersNumber.setVisible(true);
@@ -123,15 +160,16 @@ public class Panel extends JPanel {
     private void totalUsersLabel(){
         JLabel totalUsers=new JLabel("Total Users Used The Bot: ");
         totalUsers.setBounds(this.totalUsersNumber.getX()-260,this.totalUsersNumber.getY(),this.totalUsersNumber.getWidth()+Constants.SPACING,this.totalUsersNumber.getHeight());
-        totalUsers.setFont(new Font(Constants.FONT,Font.BOLD,Constants.FONT_SIZE));
+        totalUsers.setFont(this.font.deriveFont(Constants.FONT_SIZE));
         totalUsers.setOpaque(false);
         this.add(totalUsers);
         totalUsers.setVisible(true);
     }
     private void mostActiveUserNameLabel(){
-        this.mostActiveUserName=new JLabel("2");
+        this.mostActiveUserName=new JLabel("");
         this.mostActiveUserName.setBounds(this.totalUsersNumber.getX(),this.totalUsersNumber.getY()+Constants.Y_LABEL_SPACING,this.totalUsersNumber.getWidth(),this.totalUsersNumber.getHeight());
-        this.mostActiveUserName.setFont(new Font(Constants.FONT,Font.BOLD,Constants.FONT_SIZE));
+        //this.mostActiveUserName.setFont(this.font.deriveFont(Constants.FONT_SIZE));
+        this.mostActiveUserName.setFont(new Font("arial",Font.BOLD,(int) Constants.FONT_SIZE));
         this.mostActiveUserName.setOpaque(false);
         this.add(this.mostActiveUserName);
         this.mostActiveUserName.setVisible(true);
@@ -140,7 +178,7 @@ public class Panel extends JPanel {
     private void mostActiveUserLabel(){
         JLabel mostActiveUser=new JLabel("Most Active User: ");
         mostActiveUser.setBounds(this.totalUsersNumber.getX()-260,this.totalUsersNumber.getY()+Constants.Y_LABEL_SPACING,this.totalUsersNumber.getWidth(),this.totalUsersNumber.getHeight());
-        mostActiveUser.setFont(new Font(Constants.FONT, Font.BOLD,Constants.FONT_SIZE));
+        mostActiveUser.setFont(this.font.deriveFont(Constants.FONT_SIZE));
         mostActiveUser.setOpaque(false);
         this.add(mostActiveUser);
         mostActiveUser.setVisible(true);
@@ -149,7 +187,7 @@ public class Panel extends JPanel {
     private void mostPopularActivityNameLabel(){
         this.mostPopularActivityName=new JLabel("3");
         this.mostPopularActivityName.setBounds(this.mostActiveUserName.getX(),this.mostActiveUserName.getY()+Constants.Y_LABEL_SPACING,this.mostActiveUserName.getWidth(),this.mostActiveUserName.getHeight());
-        this.mostPopularActivityName.setFont(new Font(Constants.FONT,Font.BOLD,Constants.FONT_SIZE));
+        this.mostPopularActivityName.setFont(this.font.deriveFont(Constants.FONT_SIZE));
         this.mostPopularActivityName.setOpaque(false);
         this.add(this.mostPopularActivityName);
         this.mostPopularActivityName.setVisible(true);
@@ -157,7 +195,7 @@ public class Panel extends JPanel {
     private void mostPopularActivityLabel(){
         JLabel mostPopularActivity=new JLabel("Most Popular API: ");
         mostPopularActivity.setBounds(this.mostPopularActivityName.getX()-260,this.mostPopularActivityName.getY(),this.mostPopularActivityName.getWidth(),this.mostPopularActivityName.getHeight());
-        mostPopularActivity.setFont(new Font(Constants.FONT, Font.BOLD,Constants.FONT_SIZE));
+        mostPopularActivity.setFont(this.font.deriveFont(Constants.FONT_SIZE));
         mostPopularActivity.setOpaque(false);
 
         this.add(mostPopularActivity);
@@ -168,7 +206,7 @@ public class Panel extends JPanel {
     private void historyTitle(){
         JLabel historyTitle= new JLabel("Activity History:");
         historyTitle.setBounds(Constants.HISTORY_TITLE_X,Constants.HISTORY_TITLE_Y,Constants.HISTORY_TITLE_WIDTH,Constants.HISTORY_TITLE_HEIGHT);
-        historyTitle.setFont(new Font(Constants.FONT,Font.BOLD,25));
+        historyTitle.setFont(this.font.deriveFont(30f));
         historyTitle.setOpaque(false);
         this.add(historyTitle);
         historyTitle.setVisible(true);
@@ -177,10 +215,20 @@ public class Panel extends JPanel {
 
     private void historyActivityArea(){
         JTextArea historyActivity= new JTextArea();
-        historyActivity.setBounds(Constants.HISTORY_TITLE_X,Constants.HISTORY_TITLE_Y+100,Constants.HISTORY_TITLE_WIDTH+150,Constants.HISTORY_TITLE_HEIGHT+500);
+        historyActivity.setBounds(Constants.HISTORY_TITLE_X,Constants.HISTORY_TITLE_Y+80,Constants.HISTORY_TITLE_WIDTH+150,Constants.HISTORY_TITLE_HEIGHT+500);
+        historyActivity.setFont(this.font.deriveFont(Constants.FONT_SIZE));
         historyActivity.setOpaque(false);
         this.add(historyActivity);
         historyActivity.setVisible(true);
+    }
+
+    private void addApiChooserLabel(){
+        this.apiChooserLabel = new JLabel("Choose API:");
+        this.apiChooserLabel.setBounds(Constants.API_CHOOSER_LABEL_X,Constants.API_CHOOSER_LABEL_Y,Constants.API_CHOOSER_LABEL_WIDTH,Constants.API_CHOOSER_LABEL_HEIGHT);
+        this.apiChooserLabel.setFont(this.font.deriveFont(30f));
+        this.apiChooserLabel.setOpaque(false);
+        this.add(this.apiChooserLabel);
+        this.apiChooserLabel.setVisible(true);
     }
 
     public void setTotalRequestsNumberText(String text){
@@ -211,10 +259,10 @@ public class Panel extends JPanel {
 
 
     }
-        public void catFactsCheckBox(){
+    public void catFactsCheckBox(){
         this.catFactsApi=new JCheckBox("Cat Facts API");
-        this.catFactsApi.setFont(new Font(Constants.FONT,Font.BOLD,18));
-        this.catFactsApi.setForeground(Color.WHITE);
+        this.catFactsApi.setFont(this.font.deriveFont(18f));
+        this.catFactsApi.setForeground(Color.BLACK);
         this.catFactsApi.setBounds(Constants.CHECKBOX_X,500,250,250);
         this.catFactsApi.setBorderPainted(false);
         this.catFactsApi.setContentAreaFilled(false);
@@ -223,62 +271,62 @@ public class Panel extends JPanel {
         });
         this.add(this.catFactsApi);
         this.catFactsApi.setVisible(true);
-        }
+    }
 
-        public void jokesCheckBox(){
+    public void jokesCheckBox(){
         this.jokesApi=new JCheckBox("Jokes API");
-        this.jokesApi.setFont(new Font(Constants.FONT,Font.BOLD,18));
-        this.jokesApi.setForeground(Color.WHITE);
+        this.jokesApi.setFont(this.font.deriveFont(18f));
+        this.jokesApi.setForeground(Color.BLACK);
         this.jokesApi.setBounds(Constants.CHECKBOX_X,550,250,250);
-            this.jokesApi.setBorderPainted(false);
-            this.jokesApi.setContentAreaFilled(false);
-            this.jokesApi.addActionListener(e -> {
-                checkCondition(this.jokesApi);
-            });
-            this.add(this.jokesApi);
-            this.jokesApi.setVisible(true);
-        }
+        this.jokesApi.setBorderPainted(false);
+        this.jokesApi.setContentAreaFilled(false);
+        this.jokesApi.addActionListener(e -> {
+            checkCondition(this.jokesApi);
+        });
+        this.add(this.jokesApi);
+        this.jokesApi.setVisible(true);
+    }
 
-        public void numbersCheckBox(){
-            this.numbersApi=new JCheckBox("Numbers API");
-            this.numbersApi.setFont(new Font(Constants.FONT,Font.BOLD,18));
-            this.numbersApi.setForeground(Color.WHITE);
-            this.numbersApi.setBounds(Constants.CHECKBOX_X,600,250,250);
-            this.numbersApi.setBorderPainted(false);
-            this.numbersApi.setContentAreaFilled(false);
-            this.numbersApi.addActionListener(e -> {
-                checkCondition(this.numbersApi);
-            });
-            this.add(this.numbersApi);
-            this.numbersApi.setVisible(true);
-        }
+    public void numbersCheckBox(){
+        this.numbersApi=new JCheckBox("Numbers API");
+        this.numbersApi.setFont(this.font.deriveFont(18f));
+        this.numbersApi.setForeground(Color.BLACK);
+        this.numbersApi.setBounds(Constants.CHECKBOX_X,600,250,250);
+        this.numbersApi.setBorderPainted(false);
+        this.numbersApi.setContentAreaFilled(false);
+        this.numbersApi.addActionListener(e -> {
+            checkCondition(this.numbersApi);
+        });
+        this.add(this.numbersApi);
+        this.numbersApi.setVisible(true);
+    }
 
-        public void activitiesCheckBox(){
-            this.activitiesApi=new JCheckBox("Activities API");
-            this.activitiesApi.setFont(new Font(Constants.FONT,Font.BOLD,18));
-            this.activitiesApi.setForeground(Color.WHITE);
-            this.activitiesApi.setBounds(Constants.CHECKBOX_X,650,250,250);
-            this.activitiesApi.setBorderPainted(false);
-            this.activitiesApi.setContentAreaFilled(false);
-            this.activitiesApi.addActionListener(e -> {
-                checkCondition(this.activitiesApi);
-            });
-            this.add(this.activitiesApi);
-            this.activitiesApi.setVisible(true);
-        }
-        public void randomDogCheckBox(){
-            this.randomDogApi=new JCheckBox("Activities API");
-            this.randomDogApi.setFont(new Font(Constants.FONT,Font.BOLD,18));
-            this.randomDogApi.setForeground(Color.WHITE);
-            this.randomDogApi.setBounds(Constants.CHECKBOX_X,700,250,250);
-            this.randomDogApi.setBorderPainted(false);
-            this.randomDogApi.setContentAreaFilled(false);
-            this.randomDogApi.addActionListener(e -> {
-                checkCondition(this.randomDogApi);
-            });
-            this.add(this.randomDogApi);
-            this.randomDogApi.setVisible(true);
-        }
+    public void activitiesCheckBox(){
+        this.activitiesApi=new JCheckBox("Activities API");
+        this.activitiesApi.setFont(this.font.deriveFont(18f));
+        this.activitiesApi.setForeground(Color.BLACK);
+        this.activitiesApi.setBounds(Constants.CHECKBOX_X,650,250,250);
+        this.activitiesApi.setBorderPainted(false);
+        this.activitiesApi.setContentAreaFilled(false);
+        this.activitiesApi.addActionListener(e -> {
+            checkCondition(this.activitiesApi);
+        });
+        this.add(this.activitiesApi);
+        this.activitiesApi.setVisible(true);
+    }
+    public void randomDogCheckBox(){
+        this.randomDogApi=new JCheckBox("Random Dog Images API");
+        this.randomDogApi.setFont(this.font.deriveFont(18f));
+        this.randomDogApi.setForeground(Color.BLACK);
+        this.randomDogApi.setBounds(Constants.CHECKBOX_X,700,250,250);
+        this.randomDogApi.setBorderPainted(false);
+        this.randomDogApi.setContentAreaFilled(false);
+        this.randomDogApi.addActionListener(e -> {
+            checkCondition(this.randomDogApi);
+        });
+        this.add(this.randomDogApi);
+        this.randomDogApi.setVisible(true);
+    }
 
     public void checkOptions(){
         new Thread(()->{
@@ -331,14 +379,19 @@ public class Panel extends JPanel {
             JOptionPane.showMessageDialog(this, message);
         }
 
-}
+    }
 
     protected void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
         Graphics2D graphics2D = (Graphics2D) graphics;
-        graphics2D.drawImage(this.background,0,0,this.width,this.height,null);
-        Rectangle historyActivityBack = new Rectangle(Constants.HISTORY_TITLE_X,Constants.HISTORY_TITLE_Y+100,Constants.HISTORY_TITLE_WIDTH+150,Constants.HISTORY_TITLE_HEIGHT+500);
+        //graphics2D.setFont(this.font);
+        graphics2D.drawImage(this.background,0,0,this.background.getWidth()-1000,this.background.getHeight()-1000,null);
         graphics2D.setPaint(new Color(255,255,255,150));
+        RoundRectangle2D historyActivityBack = new RoundRectangle2D.Double(Constants.HISTORY_TITLE_X-10,Constants.HISTORY_TITLE_Y,Constants.HISTORY_TITLE_WIDTH+150,Constants.HISTORY_TITLE_HEIGHT+630,50,50);
         graphics2D.fill(historyActivityBack);
+        RoundRectangle2D statisticsBack = new RoundRectangle2D.Double(Constants.STATISTICS_X-10,Constants.STATISTICS_Y+25,Constants.STATISTICS_WIDTH-140,Constants.STATISTICS_HEIGHT+180,50,50);
+        graphics2D.fill(statisticsBack);
+        RoundRectangle2D apiChooserBack = new RoundRectangle2D.Double(Constants.API_CHOOSER_LABEL_X-10,Constants.API_CHOOSER_LABEL_Y+25,Constants.API_CHOOSER_LABEL_WIDTH+210,Constants.API_CHOOSER_LABEL_HEIGHT+210,50,50);
+        graphics2D.fill(apiChooserBack);
     }
 }

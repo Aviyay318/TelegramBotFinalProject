@@ -1,7 +1,6 @@
 package org.example;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.apache.commons.io.FileUtils;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 
 import java.io.*;
@@ -16,9 +15,10 @@ public class RandomDog {
         return message;
     }
 
-    public void getRandomDogLocation(){
-        System.out.println(this.message);
-        InputFile randomDogImage = null;
+    public void setUrlToPhotoOfRandomDog(){
+        //System.out.println(this.message);
+        //TODO: the problem with the dog thing was that randomDogImage was set to null instead of new inputFile()..JUST FYI
+        InputFile randomDogImage = new InputFile();
         try{
             URL url = new URL(this.message);
             InputStream inputStream = url.openStream();
@@ -30,12 +30,10 @@ public class RandomDog {
             while((length = inputStream.read(bytes))!=-1){
                 outputStream.write(bytes, 0, length);
             }
-
             inputStream.close();
             outputStream.close();
 
             randomDogImage.setMedia(PATH_TO_DOG);
-
 
         } catch (IOException e){
 
