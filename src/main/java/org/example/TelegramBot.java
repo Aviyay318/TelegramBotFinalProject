@@ -37,8 +37,8 @@ public class TelegramBot  extends TelegramLongPollingBot {
         this.counterMap.put("Numbers",0);
         this.counterMap.put("RandomDog",0);
         this.mostUserP = new HashMap<>();
-       // this.counterMap.put("general",0);
-this.panel = panel;
+        // this.counterMap.put("general",0);
+        this.panel = panel;
         update();
 
 
@@ -56,18 +56,19 @@ this.panel = panel;
 
     @Override
     public void onUpdateReceived(Update update) {
-       int counter = 0;
+        int counter = 0;
         SendMessage sendMessage= new SendMessage();
+        SendPhoto sendPhoto = new SendPhoto();
         long chatId= getChatID(update);
-       // System.out.println(update.getMessage().getFrom().getFirstName() );
+        // System.out.println(update.getMessage().getFrom().getFirstName() );
         sendMessage.setChatId(chatId);
+        sendPhoto.setChatId(chatId);
         int sum;
         try {
-             sum = this.mostUserP.get(chatId) + 1;
+            sum = this.mostUserP.get(chatId) + 1;
         }catch (Exception e){
-            sum =0;
+            sum = 0;
         }
-
         this.mostUserP.put(chatId,sum);
         if (!this.chatIds.containsKey(chatId)){
             counter = this.counterMap.get("general")+1;
@@ -120,6 +121,13 @@ this.panel = panel;
         }
         try {
             execute(sendMessage);
+            System.out.println(sendMessage);
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            execute(sendPhoto);
+            System.out.println(sendPhoto);
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
         }
@@ -144,7 +152,7 @@ this.panel = panel;
                 this.panel.setMostActiveUserNameText(this.chatIds.get(get()));
             }
 
-            }).start();
+        }).start();
 
 
     }
@@ -152,7 +160,7 @@ this.panel = panel;
         return new HashMap<>(this.mostUserP).entrySet().stream()
                 .max(Map.Entry.comparingByValue())
                 .map(Map.Entry::getKey)
-                .orElse(Long.valueOf(0));
+                .orElse(0L);
     }
     private String set(){
         if(this.counterMap.values().stream().reduce(Integer::sum).orElse(0)==0){

@@ -31,8 +31,16 @@ public class Bored {
     }
 
     public String toString(){
-        return "Activity: '" + this.activity + "'\nOf type: " + this.type + "\nCosts: " + this.price
-                + "\nAt this level of accessibility: " + this.accessibility
-                + "\nCan be accessed through this link: " + this.link;
+        String output = "";
+        if (!this.link.equals("")){
+            output = "Activity: '" + this.activity + "'\nOf type: " + this.type + "\nCosts: " + this.price
+                    + "\nAt this level of accessibility: " + this.accessibility
+                    + "\nCan be accessed through this link: " + this.link;
+        }
+        else {
+            output = "Activity: '" + this.activity + "'\nOf type: " + this.type + "\nCosts: " + this.price
+                    + "\nAt this level of accessibility: " + this.accessibility;
+        }
+        return output;
     }
 }
