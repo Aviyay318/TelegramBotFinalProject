@@ -87,15 +87,6 @@ public class Panel extends JPanel {
         totalRequests.setVisible(true);
     }
 
-    private void totalRequestsLabel(){
-        JLabel totalRequests=new JLabel("Total Requests From The Bot: ");
-        totalRequests.setBounds(Constants.REQUEST_LABEL_X,Constants.REQUEST_LABEL_Y,Constants.REQUEST_LABEL_WIDTH,Constants.REQUEST_LABEL_HEIGHT);
-        totalRequests.setFont(new Font(Constants.FONT,10,18));
-        totalRequests.setOpaque(false);
-        this.add(totalRequests);
-        totalRequests.setVisible(true);
-    }
-
     private void totalUsersNumberLabel(){
         this.totalUsersNumber=new JLabel("1");
         this.totalUsersNumber.setBounds(this.totalRequestsNumber.getX(),this.totalRequestsNumber.getY()+Constants.Y_LABEL_SPACING,this.totalRequestsNumber.getWidth(),this.totalRequestsNumber.getHeight());
@@ -105,6 +96,7 @@ public class Panel extends JPanel {
         this.totalUsersNumber.setVisible(true);
 
     }
+
     private void totalUsersLabel(){
         JLabel totalUsers=new JLabel("Total Users Used The Bot: ");
         totalUsers.setBounds(this.totalUsersNumber.getX()-260,this.totalUsersNumber.getY(),this.totalUsersNumber.getWidth()+Constants.SPACING,this.totalUsersNumber.getHeight());
@@ -139,7 +131,6 @@ public class Panel extends JPanel {
         this.add(this.mostPopularActivityName);
         this.mostPopularActivityName.setVisible(true);
     }
-
     private void mostPopularActivityLabel(){
         JLabel mostPopularActivity=new JLabel("Most Popular API: ");
         mostPopularActivity.setBounds(this.mostPopularActivityName.getX()-260,this.mostPopularActivityName.getY(),this.mostPopularActivityName.getWidth(),this.mostPopularActivityName.getHeight());
@@ -168,6 +159,20 @@ public class Panel extends JPanel {
         this.add(historyActivity);
         historyActivity.setVisible(true);
     }
+
+    public void setTotalRequestsNumberText(String text){
+        this.totalRequestsNumber.setText(text);
+    }
+    public void setTotalUsersNumberText(String text){
+        this.totalUsersNumber.setText(text);
+    }
+    public void setMostActiveUserNameText(String text){
+        this.mostActiveUserName.setText(text);
+    }
+    public void setMostPopularActivityName(String text){
+        this.mostPopularActivityName.setText(text);
+    }
+
 
     private void createBackground(){
         try {
