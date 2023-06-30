@@ -11,7 +11,7 @@ public class Window extends JFrame {
         this.setLocationRelativeTo(null);
         this.setTitle("Schlong");
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.add(new Panel(0, 0, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT));
+        this.add(Constants.PANEL);
         this.setVisible(true);
     }
 }

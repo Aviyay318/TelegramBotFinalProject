@@ -1,5 +1,9 @@
 package org.example;
 
+import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+
 import javax.swing.*;
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -48,6 +52,11 @@ public class Panel extends JPanel {
         historyTitle();
         historyActivityArea();
 
+        addT();
+
+    }
+
+    private void addT() {
 
     }
 
@@ -67,6 +76,15 @@ public class Panel extends JPanel {
         this.totalRequestsNumber.setOpaque(false);
         this.add(this.totalRequestsNumber);
         this.totalRequestsNumber.setVisible(true);
+    }
+
+    private void totalRequestsLabel(){
+        JLabel totalRequests=new JLabel("Total Requests From The Bot: ");
+        totalRequests.setBounds(Constants.REQUEST_LABEL_X,Constants.REQUEST_LABEL_Y,Constants.REQUEST_LABEL_WIDTH,Constants.REQUEST_LABEL_HEIGHT);
+        totalRequests.setFont(new Font(Constants.FONT,10,18));
+        totalRequests.setOpaque(false);
+        this.add(totalRequests);
+        totalRequests.setVisible(true);
     }
 
     private void totalRequestsLabel(){
@@ -153,7 +171,7 @@ public class Panel extends JPanel {
 
     private void createBackground(){
         try {
-            this.background= ImageIO.read(new File("res/telegramView.png"));
+            this.background= ImageIO.read(new File("res/backGround.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -19,4 +19,5 @@ public class Constants {
     public static final int HISTORY_TITLE_WIDTH=250;
     public static final int HISTORY_TITLE_HEIGHT=100;
     public static final int SPACING=50;
+    public static final Panel PANEL = new Panel(0, 0, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
 }

@@ -7,19 +7,19 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+
 public class TelegramBot  extends TelegramLongPollingBot {
-    private List<Long> chatIds;
+    private Map<Long,String> chatIds;
+    private HashMap<Long,Integer> mostUserP;
     private String [] api;
     private ApiManager apiManager;
     private HashMap<String,Integer> counterMap;
     private int counter;
+    private Panel panel;
 
-    public TelegramBot(String [] api){
-        this.chatIds = new ArrayList<>();
+    public TelegramBot(String [] api,Panel panel){
+        this.chatIds = new HashMap<>();
         this.api = api;
         this.apiManager = new ApiManager();
         this.counterMap = new HashMap<>();
@@ -28,9 +28,10 @@ public class TelegramBot  extends TelegramLongPollingBot {
         this.counterMap.put("Jokes",0);
         this.counterMap.put("AdviceSlip",0);
         this.counterMap.put("Numbers",0);
+        this.mostUserP = new HashMap<>();
        // this.counterMap.put("general",0);
-
-
+this.panel = panel;
+        update();
 
 
         this.counter = 0;
@@ -50,11 +51,20 @@ public class TelegramBot  extends TelegramLongPollingBot {
        int counter = 0;
         SendMessage sendMessage= new SendMessage();
         long chatId= getChatID(update);
+        System.out.println(update.getMessage().getFrom().getFirstName() );
         sendMessage.setChatId(chatId);
-        if (!this.chatIds.contains(chatId)){
+        int sum;
+        try {
+             sum = this.mostUserP.get(chatId) + 1;
+        }catch (Exception e){
+            sum =0;
+        }
+
+        this.mostUserP.put(chatId,sum);
+        if (!this.chatIds.keySet().contains(chatId)){
             counter = this.counterMap.get("general")+1;
             this.counterMap.put("general",counter);
-            this.chatIds.add(chatId);
+            this.chatIds.put(chatId,update.getMessage().getFrom().getFirstName() );
             sendMessage.setText("Choose Api: ");
             InlineKeyboardButton sunday= new InlineKeyboardButton(api[0]);
             sunday.setCallbackData(api[0]);
@@ -123,5 +133,37 @@ public class TelegramBot  extends TelegramLongPollingBot {
             update1=update.getCallbackQuery().getMessage().getChatId();
         }
         return update1;
+    }
+    public void update(){
+            new Thread(()->{
+                while (true){
+              this.panel.setTotalRequestsNumberText(String.valueOf(this.counterMap.values().stream().reduce(Integer::sum).orElse(0)));
+              this.panel.setMostPopularActivityName(set());
+              this.panel.setTotalUsersNumberText(String.valueOf(this.chatIds.size()));
+              this.panel.setMostActiveUserNameText(this.chatIds.get(get()));
+                }
+            }).start();
+
+
+    }
+    private Long get(){
+        return this.mostUserP.entrySet()
+                .stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse(Long.valueOf(0));
+    }
+    private String set(){
+        if(this.counterMap.values().stream().reduce(Integer::sum).orElse(0)==0){
+            return  "No activity found";
+//        if (allActivity.values().stream().anyMatch(count -> count <= 0)) {
+//            return "No activity found";
+        } else {
+            return counterMap.entrySet()
+                    .stream()
+                    .max(Map.Entry.comparingByValue())
+                    .map(Map.Entry::getKey)
+                    .orElse("No activity found");
+        }
     }
 }
