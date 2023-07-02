@@ -36,7 +36,7 @@ public class Constants {
     public static final int FIRST_NUMBER_HEIGHT=100;
     public static final float FONT_SIZE= 17f;
     public static final int CHECKBOX_X=100;
-    public static final int CHECKBOX_Y=500;
+    public static final int CHECKBOX_Y=600;
     public static final int API_CHOOSER_LABEL_X = 100;
     public static final int API_CHOOSER_LABEL_Y = 520;
     public static final int API_CHOOSER_LABEL_WIDTH = 200;

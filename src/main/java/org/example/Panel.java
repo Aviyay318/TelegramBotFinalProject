@@ -263,7 +263,7 @@ public class Panel extends JPanel {
         this.catFactsApi=new JCheckBox("Cat Facts API");
         this.catFactsApi.setFont(this.font.deriveFont(18f));
         this.catFactsApi.setForeground(Color.BLACK);
-        this.catFactsApi.setBounds(Constants.CHECKBOX_X,500,250,250);
+        this.catFactsApi.setBounds(Constants.CHECKBOX_X,Constants.CHECKBOX_Y,250,50);
         this.catFactsApi.setBorderPainted(false);
         this.catFactsApi.setContentAreaFilled(false);
         this.catFactsApi.addActionListener(e -> {
@@ -277,7 +277,7 @@ public class Panel extends JPanel {
         this.jokesApi=new JCheckBox("Jokes API");
         this.jokesApi.setFont(this.font.deriveFont(18f));
         this.jokesApi.setForeground(Color.BLACK);
-        this.jokesApi.setBounds(Constants.CHECKBOX_X,550,250,250);
+        this.jokesApi.setBounds(Constants.CHECKBOX_X,Constants.CHECKBOX_Y+50,250,50);
         this.jokesApi.setBorderPainted(false);
         this.jokesApi.setContentAreaFilled(false);
         this.jokesApi.addActionListener(e -> {
@@ -291,7 +291,7 @@ public class Panel extends JPanel {
         this.numbersApi=new JCheckBox("Numbers API");
         this.numbersApi.setFont(this.font.deriveFont(18f));
         this.numbersApi.setForeground(Color.BLACK);
-        this.numbersApi.setBounds(Constants.CHECKBOX_X,600,250,250);
+        this.numbersApi.setBounds(Constants.CHECKBOX_X,Constants.CHECKBOX_Y+100,250,50);
         this.numbersApi.setBorderPainted(false);
         this.numbersApi.setContentAreaFilled(false);
         this.numbersApi.addActionListener(e -> {
@@ -305,7 +305,7 @@ public class Panel extends JPanel {
         this.activitiesApi=new JCheckBox("Activities API");
         this.activitiesApi.setFont(this.font.deriveFont(18f));
         this.activitiesApi.setForeground(Color.BLACK);
-        this.activitiesApi.setBounds(Constants.CHECKBOX_X,650,250,250);
+        this.activitiesApi.setBounds(Constants.CHECKBOX_X,Constants.CHECKBOX_Y+150,250,50);
         this.activitiesApi.setBorderPainted(false);
         this.activitiesApi.setContentAreaFilled(false);
         this.activitiesApi.addActionListener(e -> {
@@ -318,7 +318,7 @@ public class Panel extends JPanel {
         this.randomDogApi=new JCheckBox("Random Dog Images API");
         this.randomDogApi.setFont(this.font.deriveFont(18f));
         this.randomDogApi.setForeground(Color.BLACK);
-        this.randomDogApi.setBounds(Constants.CHECKBOX_X,700,250,250);
+        this.randomDogApi.setBounds(Constants.CHECKBOX_X,Constants.CHECKBOX_Y+200,250,50);
         this.randomDogApi.setBorderPainted(false);
         this.randomDogApi.setContentAreaFilled(false);
         this.randomDogApi.addActionListener(e -> {
@@ -340,6 +340,7 @@ public class Panel extends JPanel {
     private void mergeJCheckBox(JCheckBox catFactsApi,JCheckBox jokesApi,JCheckBox numbersApi,JCheckBox activitiesApi,JCheckBox randomDogApi){
         this.checkBoxes= Arrays.asList(catFactsApi,jokesApi,numbersApi,activitiesApi,randomDogApi);
     }
+
     public void checkCondition(JCheckBox checkBox){
         if (checkBox.isSelected()){
             this.counterToThree++;
@@ -356,7 +357,6 @@ public class Panel extends JPanel {
 
     public void actionPerformed() {
         List<String> selectedApis = new ArrayList<>();
-
         if (this.catFactsApi.isSelected()) {
             selectedApis.add("Cat Facts API");
         }
@@ -372,12 +372,13 @@ public class Panel extends JPanel {
         if (this.randomDogApi.isSelected()) {
             selectedApis.add("Random Dog Image API");
         }
-
         if (selectedApis.size() >= 3) {
             String message = selectedApis.stream()
                     .collect(Collectors.joining("\n", "", "\n-----------------\nTotal: " + selectedApis.size()));
             JOptionPane.showMessageDialog(this, message);
+
         }
+
 
     }
 
