@@ -180,6 +180,10 @@ public class TelegramBot  extends TelegramLongPollingBot {
                     .orElse("No activity found");
         }
     }
+
+    public void initialUsers() {
+        this.chatIds.clear();
+    }
 }
 //                InlineKeyboardButton programming= new InlineKeyboardButton("Programming");
 //                programming.setCallbackData("Programming");
