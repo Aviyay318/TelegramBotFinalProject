@@ -60,7 +60,6 @@ public class TelegramBot  extends TelegramLongPollingBot {
         SendMessage sendMessage= new SendMessage();
         SendPhoto sendPhoto = new SendPhoto();
         long chatId= getChatID(update);
-        // System.out.println(update.getMessage().getFrom().getFirstName() );
         sendMessage.setChatId(chatId);
         sendPhoto.setChatId(chatId);
         int sum;
@@ -112,7 +111,6 @@ public class TelegramBot  extends TelegramLongPollingBot {
                 System.out.println(file.getName());
                 InputFile randomAhhDog = new InputFile(file);
                 sendPhoto.setPhoto(randomAhhDog);
-                //System.out.println(sendPhoto);
             }
             else {
                 counter = this.counterMap.get("Numbers")+1;
