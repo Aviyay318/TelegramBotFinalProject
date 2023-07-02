@@ -68,6 +68,7 @@ public class ApiManager {
 
             return (catFacts.getFact());
     }
+
     public String numberApi(){
         GetRequest getRequest = Unirest.get("http://numbersapi.com/random/math");
         try {

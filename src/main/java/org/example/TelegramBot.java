@@ -13,19 +13,22 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class TelegramBot  extends TelegramLongPollingBot {
     private Map<Long,String> chatIds;
     private HashMap<Long,Integer> mostUserP;
-    private String [] api;
+    private List<String> api;
     private ApiManager apiManager;
     private HashMap<String,Integer> counterMap;
+    private Queue<String> activityHistory;
+
     private int counter;
     private Panel panel;
 
-    public TelegramBot(String [] api,Panel panel){
+    public TelegramBot(List<String> api,Panel panel){
         this.chatIds = new HashMap<>();
         this.api = api;
         this.apiManager = new ApiManager();
@@ -37,6 +40,7 @@ public class TelegramBot  extends TelegramLongPollingBot {
         this.counterMap.put("Numbers",0);
         this.counterMap.put("RandomDog",0);
         this.mostUserP = new HashMap<>();
+        this.activityHistory = new ConcurrentLinkedQueue<>();
         // this.counterMap.put("general",0);
         this.panel = panel;
         update();
@@ -74,7 +78,7 @@ public class TelegramBot  extends TelegramLongPollingBot {
             this.counterMap.put("general",counter);
             this.chatIds.put(chatId,update.getMessage().getFrom().getFirstName() );
             sendMessage.setText("Choose Api: ");
-            List<String> apiList = Arrays.asList(api);
+            List<String> apiList =this.api;
             List<InlineKeyboardButton> buttons = IntStream.range(0, 5)
                     .mapToObj(i -> {
                         InlineKeyboardButton button = new InlineKeyboardButton(apiList.get(i));
@@ -125,7 +129,7 @@ public class TelegramBot  extends TelegramLongPollingBot {
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
         }
-        //TODO: I HAD TO ADD FINALLY BEFORE THE EXECUTE(SENDPHOTO) BECAUSE JAVA DIDNT EXECUTE IT PROPERLY.
+
         finally {
             try {
                 execute(sendPhoto);
@@ -133,7 +137,6 @@ public class TelegramBot  extends TelegramLongPollingBot {
                 throw new RuntimeException(e);
             }
             System.out.println(sendPhoto);
-
         }
 
         System.out.println(this.counterMap);
@@ -172,7 +175,7 @@ public class TelegramBot  extends TelegramLongPollingBot {
         } else {
             return counterMap.entrySet()
                     .stream()
-                    .max(Map.Entry.comparingByValue())
+                .max(Map.Entry.comparingByValue()).filter(stringIntegerEntry -> !stringIntegerEntry.getKey().equals("general"))
                     .map(Map.Entry::getKey)
                     .orElse("No activity found");
         }

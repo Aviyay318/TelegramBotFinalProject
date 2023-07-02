@@ -162,7 +162,7 @@ public class Panel extends JPanel {
     }
 
     private void totalUsersNumberLabel(){
-        this.totalUsersNumber=new JLabel("1");
+        this.totalUsersNumber=new JLabel("0");
         this.totalUsersNumber.setBounds(this.totalRequestsNumber.getX(),this.totalRequestsNumber.getY()+Constants.Y_LABEL_SPACING,this.totalRequestsNumber.getWidth(),this.totalRequestsNumber.getHeight());
         this.totalUsersNumber.setFont(this.font.deriveFont(Constants.FONT_SIZE));
         this.totalUsersNumber.setOpaque(false);
@@ -199,7 +199,7 @@ public class Panel extends JPanel {
 
     }
     private void mostPopularActivityNameLabel(){
-        this.mostPopularActivityName=new JLabel("3");
+        this.mostPopularActivityName=new JLabel();
         this.mostPopularActivityName.setBounds(this.mostActiveUserName.getX(),this.mostActiveUserName.getY()+Constants.Y_LABEL_SPACING,this.mostActiveUserName.getWidth(),this.mostActiveUserName.getHeight());
         this.mostPopularActivityName.setFont(this.font.deriveFont(Constants.FONT_SIZE));
         this.mostPopularActivityName.setOpaque(false);
@@ -281,7 +281,7 @@ public class Panel extends JPanel {
         this.catFactsApi.setBorderPainted(false);
         this.catFactsApi.setContentAreaFilled(false);
         this.catFactsApi.addActionListener(e -> {
-            checkCondition(this.catFactsApi);
+            checkCondition(this.catFactsApi,this.catFactsApi.getName());
         });
         this.add(this.catFactsApi);
         this.catFactsApi.setVisible(true);
@@ -295,7 +295,7 @@ public class Panel extends JPanel {
         this.jokesApi.setBorderPainted(false);
         this.jokesApi.setContentAreaFilled(false);
         this.jokesApi.addActionListener(e -> {
-            checkCondition(this.jokesApi);
+            checkCondition(this.jokesApi,this.jokesApi.getName());
         });
         this.add(this.jokesApi);
         this.jokesApi.setVisible(true);
@@ -309,7 +309,7 @@ public class Panel extends JPanel {
         this.numbersApi.setBorderPainted(false);
         this.numbersApi.setContentAreaFilled(false);
         this.numbersApi.addActionListener(e -> {
-            checkCondition(this.numbersApi);
+            checkCondition(this.numbersApi,this.numbersApi.getName());
         });
         this.add(this.numbersApi);
         this.numbersApi.setVisible(true);
@@ -323,7 +323,7 @@ public class Panel extends JPanel {
         this.activitiesApi.setBorderPainted(false);
         this.activitiesApi.setContentAreaFilled(false);
         this.activitiesApi.addActionListener(e -> {
-            checkCondition(this.activitiesApi);
+            checkCondition(this.activitiesApi,this.activitiesApi.getName());
         });
         this.add(this.activitiesApi);
         this.activitiesApi.setVisible(true);
@@ -336,7 +336,7 @@ public class Panel extends JPanel {
         this.randomDogApi.setBorderPainted(false);
         this.randomDogApi.setContentAreaFilled(false);
         this.randomDogApi.addActionListener(e -> {
-            checkCondition(this.randomDogApi);
+            checkCondition(this.randomDogApi,this.randomDogApi.getName());
         });
         this.add(this.randomDogApi);
         this.randomDogApi.setVisible(true);
@@ -358,6 +358,7 @@ public class Panel extends JPanel {
     public void checkCondition(JCheckBox checkBox){
         if (checkBox.isSelected()){
             this.counterToThree++;
+            this.selectedApis.add(name);
             if (this.counterToThree==4){
                 this.canSelectMore = false;
                 checkBox.setSelected(false);
@@ -371,26 +372,28 @@ public class Panel extends JPanel {
 
     public void actionPerformed() {
         if (this.catFactsApi.isSelected()) {
-            selectedApis.add("Cat Facts API");
+            selectedApis.add("Cat Facts");
         }
         if (this.jokesApi.isSelected()) {
-            selectedApis.add("Jokes API");
+            selectedApis.add("Jokes");
         }
         if (this.numbersApi.isSelected()) {
-            selectedApis.add("Numbers API");
+            selectedApis.add("Numbers");
         }
         if (this.activitiesApi.isSelected()) {
-            selectedApis.add("Activities API");
+            selectedApis.add("Activities");
         }
         if (this.randomDogApi.isSelected()) {
-            selectedApis.add("Random Dog Image API");
+            selectedApis.add("Random Dog Image");
         }
+
         if (selectedApis.size() >= 3) {
             String message = selectedApis.stream()
                     .collect(Collectors.joining("\n", "", "\n-----------------\nTotal: " + selectedApis.size()));
             JOptionPane.showMessageDialog(this, message);
 
         }
+
     }
 
     public List<String> getSelectedApis() {
