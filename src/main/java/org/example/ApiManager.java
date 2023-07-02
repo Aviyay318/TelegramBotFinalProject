@@ -68,21 +68,6 @@ public class ApiManager {
 
             return (catFacts.getFact());
     }
-    public String adviceSlipApi(){
-        AdviceSlip adviceSlip;
-        GetRequest getRequest = Unirest.get("https://api.adviceslip.com/advice");
-        ObjectMapper objectMapper= new ObjectMapper();
-        try {
-            HttpResponse<String> response = getRequest.asString();
-            String json = response.getBody();
-            adviceSlip= objectMapper.readValue(json, new TypeReference<>() {
-            });
-        }catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        return (adviceSlip.getAdvice());
-    }
     public String numberApi(){
         GetRequest getRequest = Unirest.get("http://numbersapi.com/random/math");
         try {

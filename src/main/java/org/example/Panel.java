@@ -1,6 +1,9 @@
 package org.example;
 
 import org.checkerframework.checker.units.qual.C;
+import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import javax.swing.*;
 import javax.imageio.ImageIO;
@@ -43,6 +46,7 @@ public class Panel extends JPanel {
     private JCheckBox activitiesApi;
     private JCheckBox randomDogApi;
 
+    private JButton setApi;
 
     public Panel(int x, int y, int width, int height){
         this.x=x;
@@ -86,8 +90,17 @@ public class Panel extends JPanel {
         activitiesCheckBox();
         randomDogCheckBox();
 
-
-
+        this.setApi = new JButton("FUCKKKKKKKKKK");
+        this.setApi.setBounds(0,0,100,100);
+        this.add(this.setApi);
+        this.setApi.addActionListener(fuck -> {
+            try {
+                TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
+                botsApi.registerBot(new TelegramBot(new String[]{"Cats","Jokes","Numbers","Activities","RandomDog"},Constants.PANEL));
+            }catch (TelegramApiException e){
+                throw new RuntimeException();
+            }
+        });
 
     }
 
