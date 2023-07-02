@@ -89,18 +89,9 @@ public class Panel extends JPanel {
         numbersCheckBox();
         activitiesCheckBox();
         randomDogCheckBox();
+        setButton();
 
-        this.setApi = new JButton("FUCKKKKKKKKKK");
-        this.setApi.setBounds(0,0,100,100);
-        this.add(this.setApi);
-        this.setApi.addActionListener(fuck -> {
-            try {
-                TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
-                botsApi.registerBot(new TelegramBot(new String[]{"Cats","Jokes","Numbers","Activities","RandomDog"},Constants.PANEL));
-            }catch (TelegramApiException e){
-                throw new RuntimeException();
-            }
-        });
+
 
     }
 
@@ -273,7 +264,7 @@ public class Panel extends JPanel {
 
 
     }
-    public void catFactsCheckBox(){
+    private void catFactsCheckBox(){
         this.catFactsApi=new JCheckBox("Cat Facts API");
         this.catFactsApi.setFont(this.font.deriveFont(18f));
         this.catFactsApi.setForeground(Color.BLACK);
@@ -287,7 +278,7 @@ public class Panel extends JPanel {
         this.catFactsApi.setVisible(true);
     }
 
-    public void jokesCheckBox(){
+    private void jokesCheckBox(){
         this.jokesApi=new JCheckBox("Jokes API");
         this.jokesApi.setFont(this.font.deriveFont(18f));
         this.jokesApi.setForeground(Color.BLACK);
@@ -301,7 +292,7 @@ public class Panel extends JPanel {
         this.jokesApi.setVisible(true);
     }
 
-    public void numbersCheckBox(){
+    private void numbersCheckBox(){
         this.numbersApi=new JCheckBox("Numbers API");
         this.numbersApi.setFont(this.font.deriveFont(18f));
         this.numbersApi.setForeground(Color.BLACK);
@@ -315,7 +306,7 @@ public class Panel extends JPanel {
         this.numbersApi.setVisible(true);
     }
 
-    public void activitiesCheckBox(){
+    private void activitiesCheckBox(){
         this.activitiesApi=new JCheckBox("Activities API");
         this.activitiesApi.setFont(this.font.deriveFont(18f));
         this.activitiesApi.setForeground(Color.BLACK);
@@ -328,7 +319,7 @@ public class Panel extends JPanel {
         this.add(this.activitiesApi);
         this.activitiesApi.setVisible(true);
     }
-    public void randomDogCheckBox(){
+    private void randomDogCheckBox(){
         this.randomDogApi=new JCheckBox("Random Dog Images API");
         this.randomDogApi.setFont(this.font.deriveFont(18f));
         this.randomDogApi.setForeground(Color.BLACK);
@@ -342,7 +333,27 @@ public class Panel extends JPanel {
         this.randomDogApi.setVisible(true);
     }
 
-    public void checkOptions(){
+    private void setButton() {
+        this.setApi = new JButton("Set API!");
+        this.setApi.setBounds(this.randomDogApi.getX()+125,this.randomDogApi.getY()+80,100,100);
+        this.setApi.setFont(this.font.deriveFont(18f));
+        this.setApi.setForeground(Color.BLACK);
+        this.add(this.setApi);
+        this.setApi.addActionListener(event -> {
+            try {
+                TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
+                botsApi.registerBot(new TelegramBot(this.selectedApis,this));
+            }catch (TelegramApiException e){
+                throw new RuntimeException();
+            }
+        });
+    }
+
+
+
+
+
+    private void checkOptions(){
         new Thread(()->{
             int i =0;
             while (true) {
@@ -355,7 +366,7 @@ public class Panel extends JPanel {
         this.checkBoxes= Arrays.asList(catFactsApi,jokesApi,numbersApi,activitiesApi,randomDogApi);
     }
 
-    public void checkCondition(JCheckBox checkBox){
+    private void checkCondition(JCheckBox checkBox,String name){
         if (checkBox.isSelected()){
             this.counterToThree++;
             this.selectedApis.add(name);
@@ -370,7 +381,7 @@ public class Panel extends JPanel {
         }
     }
 
-    public void actionPerformed() {
+    private void actionPerformed() {
         if (this.catFactsApi.isSelected()) {
             selectedApis.add("Cat Facts");
         }
@@ -396,7 +407,7 @@ public class Panel extends JPanel {
 
     }
 
-    public List<String> getSelectedApis() {
+    private List<String> getSelectedApis() {
         return this.selectedApis;
     }
 
