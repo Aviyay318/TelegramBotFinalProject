@@ -339,7 +339,7 @@ public class Panel extends JPanel {
 
     private void setButton() {
         this.setApi = new JButton("Set API!");
-        this.setApi.setBounds(this.randomDogApi.getX()+125,this.randomDogApi.getY()+80,100,100);
+        this.setApi.setBounds(this.randomDogApi.getX()+125,this.randomDogApi.getY()+60,100,60);
         this.setApi.setFont(this.font.deriveFont(18f));
         this.setApi.setForeground(Color.BLACK);
         this.add(this.setApi);
