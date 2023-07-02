@@ -35,13 +35,13 @@ public class Panel extends JPanel {
     private boolean canSelectMore;
 
     private JLabel apiChooserLabel;
+    private List<String> selectedApis;
 
     private JCheckBox catFactsApi;
     private JCheckBox jokesApi;
     private JCheckBox numbersApi;
     private JCheckBox activitiesApi;
     private JCheckBox randomDogApi;
-
 
 
     public Panel(int x, int y, int width, int height){
@@ -78,6 +78,7 @@ public class Panel extends JPanel {
         historyActivityArea();
 
         addApiChooserLabel();
+        this.selectedApis = new ArrayList<>();
 
         catFactsCheckBox();
         jokesCheckBox();
@@ -356,7 +357,6 @@ public class Panel extends JPanel {
     }
 
     public void actionPerformed() {
-        List<String> selectedApis = new ArrayList<>();
         if (this.catFactsApi.isSelected()) {
             selectedApis.add("Cat Facts API");
         }
@@ -378,8 +378,10 @@ public class Panel extends JPanel {
             JOptionPane.showMessageDialog(this, message);
 
         }
+    }
 
-
+    public List<String> getSelectedApis() {
+        return this.selectedApis;
     }
 
     protected void paintComponent(Graphics graphics) {
