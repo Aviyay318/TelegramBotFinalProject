@@ -38,7 +38,7 @@ public class TelegramBot  extends TelegramLongPollingBot {
         this.counterMap.put("Jokes",0);
         this.counterMap.put("Activities",0);
         this.counterMap.put("Numbers",0);
-        this.counterMap.put("RandomDog",0);
+        this.counterMap.put("Random Dog",0);
         this.mostUserP = new HashMap<>();
         this.activityHistory = new ConcurrentLinkedQueue<>();
         // this.counterMap.put("general",0);
@@ -107,9 +107,9 @@ public class TelegramBot  extends TelegramLongPollingBot {
                 counter = this.counterMap.get("Activities")+1;
                 this.counterMap.put("Activities",counter);
                 sendMessage.setText(this.apiManager.activitiesApi());
-            }else if (update.getCallbackQuery().getData().equals("RandomDog")){
-                counter = this.counterMap.get("RandomDog")+1;
-                this.counterMap.put("RandomDog",counter);
+            }else if (update.getCallbackQuery().getData().equals("Random Dog")){
+                counter = this.counterMap.get("Random Dog")+1;
+                this.counterMap.put("Random Dog",counter);
                 this.apiManager.dogApi();
                 File file = new File("res/dog/randomDog.jpg");
                 System.out.println(file.getName());
