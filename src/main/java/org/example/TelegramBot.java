@@ -34,7 +34,7 @@ public class TelegramBot  extends TelegramLongPollingBot {
         this.apiManager = new ApiManager();
         this.counterMap = new HashMap<>();
         this.counterMap.put("general",0);
-        this.counterMap.put("Cats",0);
+        this.counterMap.put("Cat Facts",0);
         this.counterMap.put("Jokes",0);
         this.counterMap.put("Activities",0);
         this.counterMap.put("Numbers",0);
@@ -81,8 +81,8 @@ public class TelegramBot  extends TelegramLongPollingBot {
             List<String> apiList =this.api;
             List<InlineKeyboardButton> buttons = IntStream.range(0, 5)
                     .mapToObj(i -> {
-                        InlineKeyboardButton button = new InlineKeyboardButton(apiList.get(i));
-                        button.setCallbackData(apiList.get(i));
+                        InlineKeyboardButton button = new InlineKeyboardButton(this.api.get(i));
+                        button.setCallbackData(this.api.get(i));
                         return button;
                     })
                     .collect(Collectors.toList());
@@ -95,9 +95,9 @@ public class TelegramBot  extends TelegramLongPollingBot {
             sendMessage.setReplyMarkup(inlineKeyboardMarkup);
             sendPhoto.setReplyMarkup(inlineKeyboardMarkup);
         } else {
-            if(update.getCallbackQuery().getData().equals("Cats")){
-                counter = this.counterMap.get("Cats")+1;
-                this.counterMap.put("Cats",counter);
+            if(update.getCallbackQuery().getData().equals("Cat Facts")){
+                counter = this.counterMap.get("Cat Facts")+1;
+                this.counterMap.put("Cat Facts",counter);
                 sendMessage.setText(this.apiManager.catsFactApi());
             } else if (update.getCallbackQuery().getData().equals("Jokes")){
                 counter = this.counterMap.get("Jokes")+1;

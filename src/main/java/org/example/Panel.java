@@ -37,6 +37,9 @@ public class Panel extends JPanel {
     private int counterToThree;
     private boolean canSelectMore;
 
+    private TelegramBotsApi botsApi;
+
+    private boolean isBotInitialized;
     private JLabel apiChooserLabel;
     private List<String> selectedApis;
 
@@ -58,6 +61,7 @@ public class Panel extends JPanel {
         this.checkBoxes = new ArrayList<>();
         this.counterToThree=0;
         this.canSelectMore=true;
+
         setNewFont();
 
         setTitle();
@@ -340,12 +344,9 @@ public class Panel extends JPanel {
         this.setApi.setForeground(Color.BLACK);
         this.add(this.setApi);
         this.setApi.addActionListener(event -> {
-            try {
-                TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
-                botsApi.registerBot(new TelegramBot(this.selectedApis,this));
-            }catch (TelegramApiException e){
-                throw new RuntimeException();
-            }
+            initializeBot();
+            this.isBotInitialized = true;
+
         });
     }
 
