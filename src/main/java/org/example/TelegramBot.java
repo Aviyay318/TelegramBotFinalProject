@@ -260,13 +260,9 @@ this.historyActivities =new ArrayList<>();
         String text="";
         int index = 1;
         for (String i: this.historyActivities ) {
-            if (i!=null){
                 text+=index+") "+i+"\n\n";
                 index++;
-            }else {
-                System.out.println("break");
 
-            }
         }
         return text;
     }
