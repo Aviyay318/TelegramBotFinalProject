@@ -458,6 +458,6 @@ public class Panel extends JPanel {
         RoundRectangle2D chartBack = new RoundRectangle2D.Double(Constants.API_CHOOSER_LABEL_X+420, Constants.API_CHOOSER_LABEL_Y+25,600,380,50,50);
         graphics2D.fill(chartBack);
 
-        graphics2D.drawImage(this.chart, Constants.API_CHOOSER_LABEL_X+420, Constants.API_CHOOSER_LABEL_Y+40,600,380,null);
+        graphics2D.drawImage(this.chart, Constants.API_CHOOSER_LABEL_X+410, Constants.API_CHOOSER_LABEL_Y+40,620,400,null);
     }
 }
