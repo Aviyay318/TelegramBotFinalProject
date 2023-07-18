@@ -3,6 +3,7 @@ package org.example;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -14,6 +15,8 @@ import java.io.File;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -74,7 +77,7 @@ public class TelegramBot  extends TelegramLongPollingBot {
         sendPhoto.setChatId(chatId);
         long timestamp = 0;
         Message message = update.getMessage();
-
+        CallbackQuery callbackQuery = update.getCallbackQuery();
 
         if (this.chatIds.containsKey(chatId)){
             int count = this.mostUserP.get(chatId);
@@ -153,14 +156,15 @@ public class TelegramBot  extends TelegramLongPollingBot {
             Instant instant = Instant.ofEpochSecond(timestamp); // המרת הערך לאובייקט Instant
             LocalDateTime date = LocalDateTime.ofInstant(instant, ZoneId.systemDefault()); // המרת הערך לתאריך מקומי באזור המערכת
 
-            getRecentInteractions("Name: "+this.chatIds.get(chatId)+" API Used: "+update.getCallbackQuery().getData()+ "\nDate: "+date);
+            assert date != null;
+            getRecentInteractions("Name: "+this.chatIds.get(chatId)+" API Used: "+update.getCallbackQuery().getData()+ "\nDate: "+ date.format(DateTimeFormatter.ISO_LOCAL_DATE) + " /" + date.format(DateTimeFormatter.ISO_LOCAL_TIME));
 
             try {
                 execute(sendPhoto);
             } catch (TelegramApiException e) {
                 throw new RuntimeException(e);
             }
-            System.out.println(sendPhoto);
+            //System.out.println(sendPhoto);
         }
 
 
