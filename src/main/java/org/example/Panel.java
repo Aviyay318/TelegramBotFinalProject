@@ -455,8 +455,8 @@ public class Panel extends JPanel {
         graphics2D.fill(apiChooserBack);
 
         setImageToChart();
-        RoundRectangle2D chartBack = new RoundRectangle2D.Double(Constants.API_CHOOSER_LABEL_X+420, Constants.API_CHOOSER_LABEL_Y+25,this.chart.getWidth(),this.chart.getHeight()+10,50,50);
+        RoundRectangle2D chartBack = new RoundRectangle2D.Double(Constants.API_CHOOSER_LABEL_X+420, Constants.API_CHOOSER_LABEL_Y+25,500,300,50,50);
         graphics2D.fill(chartBack);
-        graphics2D.drawImage(this.chart, Constants.API_CHOOSER_LABEL_X+420, Constants.API_CHOOSER_LABEL_Y+40,this.chart.getWidth(),this.chart.getHeight(),null);
+        graphics2D.drawImage(this.chart, Constants.API_CHOOSER_LABEL_X+420, Constants.API_CHOOSER_LABEL_Y+40,500,300,null);
     }
 }
