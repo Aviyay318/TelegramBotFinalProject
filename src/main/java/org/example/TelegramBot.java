@@ -243,12 +243,13 @@ this.historyActivities =new ArrayList<>();
         }
     }
     public void getRecentInteractions(String info) {
-           if (this.historyActivities.size()<10){
-                 this.historyActivities.add(info);
-           }else {
-               this.historyActivities.subList(0, this.historyActivities.size() - 10).clear();
-           }
+        if (this.historyActivities.size() >= 10) {
+            this.historyActivities.remove(0);
+        }
+        this.historyActivities.add(info);
     }
+
+
 
 
 
