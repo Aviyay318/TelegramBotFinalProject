@@ -38,7 +38,7 @@ public class Panel extends JPanel {
     private boolean canSelectMore;
 
     private TelegramBotsApi botsApi;
-
+    private TelegramBot wtfIsThisShit;
     private boolean isBotInitialized;
     private JLabel apiChooserLabel;
     private List<String> selectedApis;
@@ -87,6 +87,7 @@ public class Panel extends JPanel {
 
         addApiChooserLabel();
         this.selectedApis = new ArrayList<>();
+        this.isBotInitialized = false;
 
         catFactsCheckBox();
         jokesCheckBox();
@@ -177,7 +178,7 @@ public class Panel extends JPanel {
     private void mostActiveUserNameLabel(){
         this.mostActiveUserName=new JLabel("");
         this.mostActiveUserName.setBounds(this.totalUsersNumber.getX(),this.totalUsersNumber.getY()+Constants.Y_LABEL_SPACING,this.totalUsersNumber.getWidth(),this.totalUsersNumber.getHeight());
-        //this.mostActiveUserName.setFont(this.font.deriveFont(Constants.FONT_SIZE));
+        this.mostActiveUserName.setFont(this.font.deriveFont(Constants.FONT_SIZE));
         this.mostActiveUserName.setFont(new Font("arial",Font.BOLD,(int) Constants.FONT_SIZE));
         this.mostActiveUserName.setOpaque(false);
         this.add(this.mostActiveUserName);
@@ -225,7 +226,7 @@ public class Panel extends JPanel {
     private void historyActivityArea(){
         JTextArea historyActivity= new JTextArea();
         historyActivity.setBounds(Constants.HISTORY_TITLE_X,Constants.HISTORY_TITLE_Y+80,Constants.HISTORY_TITLE_WIDTH+150,Constants.HISTORY_TITLE_HEIGHT+500);
-        historyActivity.setFont(this.font.deriveFont(Constants.FONT_SIZE));
+        historyActivity.setFont(new Font("arial",Font.BOLD,(int)Constants.FONT_SIZE));
         historyActivity.setOpaque(false);
         this.add(historyActivity);
         historyActivity.setVisible(true);
@@ -265,8 +266,6 @@ public class Panel extends JPanel {
     private void addApiOption() {
         JLabel jLabel = new JLabel("Choose Api: ");
 
-
-
     }
     private void catFactsCheckBox(){
         this.catFactsApi=new JCheckBox("Cat Facts API");
@@ -276,7 +275,7 @@ public class Panel extends JPanel {
         this.catFactsApi.setBorderPainted(false);
         this.catFactsApi.setContentAreaFilled(false);
         this.catFactsApi.addActionListener(e -> {
-            checkCondition(this.catFactsApi,this.catFactsApi.getName());
+            checkCondition(this.catFactsApi,"Cat Facts");
         });
         this.add(this.catFactsApi);
         this.catFactsApi.setVisible(true);
@@ -290,7 +289,7 @@ public class Panel extends JPanel {
         this.jokesApi.setBorderPainted(false);
         this.jokesApi.setContentAreaFilled(false);
         this.jokesApi.addActionListener(e -> {
-            checkCondition(this.jokesApi,this.jokesApi.getName());
+            checkCondition(this.jokesApi,"Jokes");
         });
         this.add(this.jokesApi);
         this.jokesApi.setVisible(true);
@@ -304,7 +303,7 @@ public class Panel extends JPanel {
         this.numbersApi.setBorderPainted(false);
         this.numbersApi.setContentAreaFilled(false);
         this.numbersApi.addActionListener(e -> {
-            checkCondition(this.numbersApi,this.numbersApi.getName());
+            checkCondition(this.numbersApi,"Numbers");
         });
         this.add(this.numbersApi);
         this.numbersApi.setVisible(true);
@@ -318,7 +317,7 @@ public class Panel extends JPanel {
         this.activitiesApi.setBorderPainted(false);
         this.activitiesApi.setContentAreaFilled(false);
         this.activitiesApi.addActionListener(e -> {
-            checkCondition(this.activitiesApi,this.activitiesApi.getName());
+            checkCondition(this.activitiesApi,"Activities");
         });
         this.add(this.activitiesApi);
         this.activitiesApi.setVisible(true);
@@ -331,27 +330,39 @@ public class Panel extends JPanel {
         this.randomDogApi.setBorderPainted(false);
         this.randomDogApi.setContentAreaFilled(false);
         this.randomDogApi.addActionListener(e -> {
-            checkCondition(this.randomDogApi,this.randomDogApi.getName());
+            checkCondition(this.randomDogApi,"Random Dog");
         });
         this.add(this.randomDogApi);
         this.randomDogApi.setVisible(true);
     }
 
+    private void initializeBot(){
+        if(!this.isBotInitialized){
+            try {
+                this.botsApi = new TelegramBotsApi(DefaultBotSession.class);
+                this.wtfIsThisShit = new TelegramBot(this.selectedApis,this);
+                this.botsApi.registerBot(this.wtfIsThisShit);
+            }catch (TelegramApiException e){
+                throw new RuntimeException();
+            }
+        }
+    }
+
     private void setButton() {
-        this.setApi = new JButton("Set API!");
-        this.setApi.setBounds(this.randomDogApi.getX()+125,this.randomDogApi.getY()+60,100,60);
+        this.setApi = new JButton("--> Set API!");
+        this.setApi.setBounds(this.randomDogApi.getX()+180,this.randomDogApi.getY()-110,180,60);
         this.setApi.setFont(this.font.deriveFont(18f));
+        this.setApi.setOpaque(false);
+        //this.setApi.setContentAreaFilled(false);
         this.setApi.setForeground(Color.BLACK);
         this.add(this.setApi);
         this.setApi.addActionListener(event -> {
             initializeBot();
             this.isBotInitialized = true;
-
+            this.wtfIsThisShit.updateApiList(this.selectedApis);
+            this.wtfIsThisShit.initialUsers();
         });
     }
-
-
-
 
 
     private void checkOptions(){
@@ -412,6 +423,14 @@ public class Panel extends JPanel {
         return this.selectedApis;
     }
 
+    private void setImageToChart(){
+        try{
+            this.chart = ImageIO.read(new File("res/chart.png"));
+        }catch (IOException e){
+
+        }
+    }
+
     protected void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
         Graphics2D graphics2D = (Graphics2D) graphics;
@@ -424,5 +443,10 @@ public class Panel extends JPanel {
         graphics2D.fill(statisticsBack);
         RoundRectangle2D apiChooserBack = new RoundRectangle2D.Double(Constants.API_CHOOSER_LABEL_X-10,Constants.API_CHOOSER_LABEL_Y+25,Constants.API_CHOOSER_LABEL_WIDTH+210,Constants.API_CHOOSER_LABEL_HEIGHT+210,50,50);
         graphics2D.fill(apiChooserBack);
+
+        setImageToChart();
+        RoundRectangle2D chartBack = new RoundRectangle2D.Double(Constants.API_CHOOSER_LABEL_X+420, Constants.API_CHOOSER_LABEL_Y+25,this.chart.getWidth(),this.chart.getHeight()+10,50,50);
+        graphics2D.fill(chartBack);
+        graphics2D.drawImage(this.chart, Constants.API_CHOOSER_LABEL_X+420, Constants.API_CHOOSER_LABEL_Y+40,this.chart.getWidth(),this.chart.getHeight(),null);
     }
 }
