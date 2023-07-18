@@ -4,6 +4,7 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -17,13 +18,11 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class TelegramBot  extends TelegramLongPollingBot {
     private Map<Long,String> chatIds;
-    private List<Message> messageHistory;
     private HashMap<Long,Integer> mostUserP;
     private List<String> api;
     private ApiManager apiManager;
@@ -77,27 +76,10 @@ this.historyActivities =new ArrayList<>();
         long chatId= getChatID(update);
         sendMessage.setChatId(chatId);
         sendPhoto.setChatId(chatId);
-//        int sum;
-//        try {
-//            sum = this.mostUserP.get(chatId) + 1;
-//        }catch (Exception e){
-//            sum = 0;
-//        }
-//        long timestamp = update.getMessage().getDate(); // הערך בתוך timestamp באופן Unix timestamp
-//        Instant instant = Instant.ofEpochSecond(timestamp); // המרת הערך לאובייקט Instant
-//        LocalDateTime date = LocalDateTime.ofInstant(instant, ZoneId.systemDefault()); // המרת הערך לתאריך מקומי באזור המערכת
-//        System.out.println(date); // הדפסת התאריך בפורמט של LocalDateTime
-//        String name = update.getMessage().getFrom().getFirstName();
-//        LocalDateTime timestamp = LocalDateTime.ofInstant(
-//                Instant.ofEpochSecond(update.getMessage().getDate()),
-//                ZoneId.systemDefault()
-//        );
-//        Message message = new Message(chatId, timestamp, name);
-//        messageHistory.add(message);
-//      //  System.out.println(getRecentInteractions());
+        long timestamp = 0;
+        Message message = update.getMessage();
 
-//
-        //      this.mostUserP.put(chatId,sum);
+
         if (this.chatIds.containsKey(chatId)){
             int count = this.mostUserP.get(chatId);
             count++;
@@ -106,9 +88,10 @@ this.historyActivities =new ArrayList<>();
             this.mostUserP.put(chatId,1);
         }
         if (update.getMessage()!=null){
+            timestamp = message.getDate();
             counter = this.counterMap.get("general")+1;
             this.counterMap.put("general",counter);
-            this.chatIds.put(chatId,update.getMessage().getFrom().getFirstName());
+            this.chatIds.put(chatId,message.getFrom().getFirstName());
             System.out.println(this.chatIds);
              sendMessage.setText("Choose Api: ");
 
@@ -149,6 +132,8 @@ this.historyActivities =new ArrayList<>();
             sendMessage.setReplyMarkup(inlineKeyboardMarkup);
             sendPhoto.setReplyMarkup(inlineKeyboardMarkup);
         }else {
+            timestamp = update.getCallbackQuery().getMessage().getDate();
+            System.out.println();
             if(update.getCallbackQuery().getData().equals("Cat Facts")){
                 counter = this.counterMap.get("Cat Facts")+1;
                 this.counterMap.put("Cat Facts",counter);
@@ -177,12 +162,12 @@ this.historyActivities =new ArrayList<>();
             }
 
         }
-        System.out.println(this.counterMap);
+
 
         try {
             execute(sendMessage);
             System.out.println(sendMessage);
-            getRecentInteractions("Name: "+this.chatIds.get(chatId)+"\nAPI Used: "+update.getCallbackQuery().getData()+ ", Date: ");
+
 
 
         } catch (TelegramApiException e) {
@@ -200,10 +185,7 @@ this.historyActivities =new ArrayList<>();
 
 
     }
-    public List<Message> getRecentInteractions() {
-        int endIndex = Math.min(10, messageHistory.size());
-        return messageHistory.subList(messageHistory.size() - endIndex, messageHistory.size());
-    }
+
     public long getChatID(Update update){
         long update1=0;
         if (update.getMessage()!=null){

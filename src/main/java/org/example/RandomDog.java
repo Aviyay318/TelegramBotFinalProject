@@ -16,8 +16,7 @@ public class RandomDog {
     }
 
     public void setUrlToPhotoOfRandomDog(){
-        //System.out.println(this.message);
-        //TODO: the problem with the dog thing was that randomDogImage was set to null instead of new inputFile()..JUST FYI
+
         InputFile randomDogImage = new InputFile();
         try{
             URL url = new URL(this.message);

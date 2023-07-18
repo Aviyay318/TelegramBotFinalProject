@@ -111,7 +111,7 @@ public class Panel extends JPanel {
         }
 
     }
-    //TODO: This is the general title = telegram bot manager.
+
     private void setTitle(){
         this.title = new JLabel("Telegram Bot Manager");
         this.title.setBounds(Constants.TITLE_X,Constants.TITLE_Y,Constants.TITLE_WIDTH,Constants.TITLE_HEIGHT);
@@ -121,7 +121,7 @@ public class Panel extends JPanel {
         this.add(this.title);
         this.title.setVisible(true);
     }
-    //TODO: Added blue outline to the JLabel to make it look cooler idk
+
     private void setBlueTitle(){
         JLabel blue = new JLabel("Telegram Bot Manager");
         blue.setBounds(Constants.TITLE_X+1,Constants.TITLE_Y,Constants.TITLE_WIDTH,Constants.TITLE_HEIGHT);
@@ -132,7 +132,7 @@ public class Panel extends JPanel {
         blue.setVisible(true);
     }
 
-    //TODO: Changed setTitleLabel to setStatisticsLabel since we have a more general title label
+
     private void setStatisticsLabel(){
         JLabel statisticsLabel=new JLabel("Statistics");
         statisticsLabel.setBounds(Constants.STATISTICS_X,Constants.STATISTICS_Y,Constants.STATISTICS_WIDTH,Constants.STATISTICS_HEIGHT);
@@ -373,18 +373,6 @@ public class Panel extends JPanel {
     }
 
 
-    private void checkOptions(){
-        new Thread(()->{
-            int i =0;
-            while (true) {
-                actionPerformed();
-            }
-        }).start();
-    }
-
-    private void mergeJCheckBox(JCheckBox catFactsApi,JCheckBox jokesApi,JCheckBox numbersApi,JCheckBox activitiesApi,JCheckBox randomDogApi){
-        this.checkBoxes= Arrays.asList(catFactsApi,jokesApi,numbersApi,activitiesApi,randomDogApi);
-    }
 
     private void checkCondition(JCheckBox checkBox,String name){
         if (checkBox.isSelected()){
@@ -403,35 +391,6 @@ public class Panel extends JPanel {
         }
     }
 
-    private void actionPerformed() {
-//        if (this.catFactsApi.isSelected()) {
-//            selectedApis.add("Cat Facts");
-//        }
-//        if (this.jokesApi.isSelected()) {
-//            selectedApis.add("Jokes");
-//        }
-//        if (this.numbersApi.isSelected()) {
-//            selectedApis.add("Numbers");
-//        }
-//        if (this.activitiesApi.isSelected()) {
-//            selectedApis.add("Activities");
-//        }
-//        if (this.randomDogApi.isSelected()) {
-//            selectedApis.add("Random Dog Image");
-//        }
-//
-//        if (selectedApis.size() >= 3) {
-//            String message = selectedApis.stream()
-//                    .collect(Collectors.joining("\n", "", "\n-----------------\nTotal: " + selectedApis.size()));
-//            JOptionPane.showMessageDialog(this, message);
-//
-//        }
-
-    }
-
-    private List<String> getSelectedApis() {
-        return this.selectedApis;
-    }
 
     private void setImageToChart(){
         try{

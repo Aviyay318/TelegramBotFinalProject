@@ -41,7 +41,6 @@ public class ApiManager {
         RandomDog randomDog;
         try {
             GetRequest getRequest = Unirest.get("https://dog.ceo/api/breeds/image/random");
-            //System.out.println(getRequest.asString().getBody());
             HttpResponse<String> response = getRequest.asString();
             String json = response.getBody();
             ObjectMapper objectMapper = new ObjectMapper();
