@@ -1,17 +1,21 @@
 package org.example;
 
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.methods.send.SendDice;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.File;
-import java.io.FileInputStream;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
@@ -39,6 +43,9 @@ public class TelegramBot  extends TelegramLongPollingBot {
         this.counterMap.put("Activities",0);
         this.counterMap.put("Numbers",0);
         this.counterMap.put("Random Dog",0);
+        this.chart = new InteractionChart(this);
+        this.chartThread = new Thread(this.chart);
+        this.chartThread.start();
         this.mostUserP = new HashMap<>();
         this.activityHistory = new ConcurrentLinkedQueue<>();
         // this.counterMap.put("general",0);
@@ -47,6 +54,9 @@ public class TelegramBot  extends TelegramLongPollingBot {
 
 
         this.counter = 0;
+    }
+    public void updateApiList(List<String> api){
+        this.api = api;
     }
     @Override
     public String getBotUsername() {
@@ -160,8 +170,6 @@ public class TelegramBot  extends TelegramLongPollingBot {
             }
 
         }).start();
-
-
     }
     private  Long get(){
         return new HashMap<>(this.mostUserP).entrySet().stream()
@@ -175,7 +183,7 @@ public class TelegramBot  extends TelegramLongPollingBot {
         } else {
             return counterMap.entrySet()
                     .stream()
-                .max(Map.Entry.comparingByValue()).filter(stringIntegerEntry -> !stringIntegerEntry.getKey().equals("general"))
+                    .max(Map.Entry.comparingByValue()).filter(stringIntegerEntry -> !stringIntegerEntry.getKey().equals("general"))
                     .map(Map.Entry::getKey)
                     .orElse("No activity found");
         }
@@ -183,6 +191,10 @@ public class TelegramBot  extends TelegramLongPollingBot {
 
     public void initialUsers() {
         this.chatIds.clear();
+    }
+
+    public HashMap<String, Integer> getCounterMap() {
+        return counterMap;
     }
 }
 //                InlineKeyboardButton programming= new InlineKeyboardButton("Programming");
