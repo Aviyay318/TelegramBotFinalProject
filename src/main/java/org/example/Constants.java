@@ -40,6 +40,12 @@ public class Constants {
     public static final int API_CHOOSER_LABEL_Y = 520;
     public static final int API_CHOOSER_LABEL_WIDTH = 200;
     public static final int API_CHOOSER_LABEL_HEIGHT = 100;
+    public static final String API_CAT_FACT = "Cat Facts";
+    public static final String API_JOKES = "Jokes";
+    public static final String API_ACTIVITIES = "Activities";
+    public static final String API_NUMBERS = "Numbers";
+    public static final String API_RANDOM_DOG = "Random Dog";
+
 
 
 }
