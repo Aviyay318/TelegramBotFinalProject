@@ -19,8 +19,8 @@ public class InteractionChart implements  Runnable{
     public InteractionChart(TelegramBot telegramBot){
         this.interactionMap = telegramBot.getCounterMap();
         this.chart = new QuickChart();
-        this.chart.setWidth(500);
-        this.chart.setHeight(300);
+        this.chart.setWidth(550);
+        this.chart.setHeight(350);
         this.chart.setDevicePixelRatio(2.0);
         this.chart.setVersion("2.9.4");
     }
