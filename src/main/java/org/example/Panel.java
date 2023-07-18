@@ -172,7 +172,7 @@ public class Panel extends JPanel {
 
     private void totalUsersLabel(){
         JLabel totalUsers=new JLabel("Total Users Used The Bot: ");
-        totalUsers.setBounds(this.totalUsersNumber.getX()-260,this.totalUsersNumber.getY(),this.totalUsersNumber.getWidth()+Constants.SPACING,this.totalUsersNumber.getHeight());
+        totalUsers.setBounds(this.totalUsersNumber.getX()-320,this.totalUsersNumber.getY(),this.totalUsersNumber.getWidth()+Constants.SPACING,this.totalUsersNumber.getHeight());
         totalUsers.setFont(this.font.deriveFont(Constants.FONT_SIZE));
         totalUsers.setOpaque(false);
         this.add(totalUsers);
@@ -190,7 +190,7 @@ public class Panel extends JPanel {
     }
     private void mostActiveUserLabel(){
         JLabel mostActiveUser=new JLabel("Most Active User: ");
-        mostActiveUser.setBounds(this.totalUsersNumber.getX()-260,this.totalUsersNumber.getY()+Constants.Y_LABEL_SPACING,this.totalUsersNumber.getWidth(),this.totalUsersNumber.getHeight());
+        mostActiveUser.setBounds(this.totalUsersNumber.getX()-320,this.totalUsersNumber.getY()+Constants.Y_LABEL_SPACING,this.totalUsersNumber.getWidth(),this.totalUsersNumber.getHeight());
         mostActiveUser.setFont(this.font.deriveFont(Constants.FONT_SIZE));
         mostActiveUser.setOpaque(false);
         this.add(mostActiveUser);
@@ -207,7 +207,7 @@ public class Panel extends JPanel {
     }
     private void mostPopularActivityLabel(){
         JLabel mostPopularActivity=new JLabel("Most Popular API: ");
-        mostPopularActivity.setBounds(this.mostPopularActivityName.getX()-260,this.mostPopularActivityName.getY(),this.mostPopularActivityName.getWidth(),this.mostPopularActivityName.getHeight());
+        mostPopularActivity.setBounds(this.mostPopularActivityName.getX()-320,this.mostPopularActivityName.getY(),this.mostPopularActivityName.getWidth(),this.mostPopularActivityName.getHeight());
         mostPopularActivity.setFont(this.font.deriveFont(Constants.FONT_SIZE));
         mostPopularActivity.setOpaque(false);
 
@@ -233,7 +233,7 @@ public class Panel extends JPanel {
 
     private void historyActivityArea(){
         this.historyActivity= new JTextArea();
-        historyActivity.setBounds(Constants.HISTORY_TITLE_X,Constants.HISTORY_TITLE_Y+80,Constants.HISTORY_TITLE_WIDTH+150,Constants.HISTORY_TITLE_HEIGHT+500);
+        historyActivity.setBounds(Constants.HISTORY_TITLE_X,Constants.HISTORY_TITLE_Y+80,Constants.HISTORY_TITLE_WIDTH+150,Constants.HISTORY_TITLE_HEIGHT+700);
         historyActivity.setFont(new Font("arial",Font.BOLD,(int)Constants.FONT_SIZE));
         historyActivity.setOpaque(false);
         this.add(historyActivity);
@@ -444,19 +444,20 @@ public class Panel extends JPanel {
     protected void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
         Graphics2D graphics2D = (Graphics2D) graphics;
-        //graphics2D.setFont(this.font);
+
         graphics2D.drawImage(this.background,0,0,this.background.getWidth()-1000,this.background.getHeight()-1000,null);
         graphics2D.setPaint(new Color(255,255,255,150));
-        RoundRectangle2D historyActivityBack = new RoundRectangle2D.Double(Constants.HISTORY_TITLE_X-10,Constants.HISTORY_TITLE_Y,Constants.HISTORY_TITLE_WIDTH+150,Constants.HISTORY_TITLE_HEIGHT+630,50,50);
+
+        RoundRectangle2D historyActivityBack = new RoundRectangle2D.Double(Constants.HISTORY_TITLE_X-10,Constants.HISTORY_TITLE_Y,Constants.HISTORY_TITLE_WIDTH+150,Constants.HISTORY_TITLE_HEIGHT+700,50,50);
         graphics2D.fill(historyActivityBack);
         RoundRectangle2D statisticsBack = new RoundRectangle2D.Double(Constants.STATISTICS_X-10,Constants.STATISTICS_Y+25,Constants.STATISTICS_WIDTH-140,Constants.STATISTICS_HEIGHT+180,50,50);
         graphics2D.fill(statisticsBack);
-        RoundRectangle2D apiChooserBack = new RoundRectangle2D.Double(Constants.API_CHOOSER_LABEL_X-10,Constants.API_CHOOSER_LABEL_Y+25,Constants.API_CHOOSER_LABEL_WIDTH+210,Constants.API_CHOOSER_LABEL_HEIGHT+210,50,50);
+        RoundRectangle2D apiChooserBack = new RoundRectangle2D.Double(Constants.API_CHOOSER_LABEL_X-10,Constants.API_CHOOSER_LABEL_Y+25,Constants.API_CHOOSER_LABEL_WIDTH+210,Constants.API_CHOOSER_LABEL_HEIGHT+280,50,50);
         graphics2D.fill(apiChooserBack);
-
         setImageToChart();
-        RoundRectangle2D chartBack = new RoundRectangle2D.Double(Constants.API_CHOOSER_LABEL_X+420, Constants.API_CHOOSER_LABEL_Y+25,500,300,50,50);
+        RoundRectangle2D chartBack = new RoundRectangle2D.Double(Constants.API_CHOOSER_LABEL_X+420, Constants.API_CHOOSER_LABEL_Y+25,600,380,50,50);
         graphics2D.fill(chartBack);
-        graphics2D.drawImage(this.chart, Constants.API_CHOOSER_LABEL_X+420, Constants.API_CHOOSER_LABEL_Y+40,500,300,null);
+
+        graphics2D.drawImage(this.chart, Constants.API_CHOOSER_LABEL_X+420, Constants.API_CHOOSER_LABEL_Y+40,600,380,null);
     }
 }
