@@ -50,6 +50,9 @@ public class Panel extends JPanel {
     private JCheckBox randomDogApi;
 
     private JButton setApi;
+    private JTextArea historyActivity;
+
+    private BufferedImage chart;
 
     public Panel(int x, int y, int width, int height){
         this.x=x;
@@ -223,8 +226,13 @@ public class Panel extends JPanel {
 
     }
 
+    public void setTextHistoryArea(String textHistoryArea){
+        this.historyActivity.setText(textHistoryArea);
+    }
+
+
     private void historyActivityArea(){
-        JTextArea historyActivity= new JTextArea();
+        this.historyActivity= new JTextArea();
         historyActivity.setBounds(Constants.HISTORY_TITLE_X,Constants.HISTORY_TITLE_Y+80,Constants.HISTORY_TITLE_WIDTH+150,Constants.HISTORY_TITLE_HEIGHT+500);
         historyActivity.setFont(new Font("arial",Font.BOLD,(int)Constants.FONT_SIZE));
         historyActivity.setOpaque(false);
@@ -390,32 +398,34 @@ public class Panel extends JPanel {
         }
         if (!checkBox.isSelected()){
             this.counterToThree--;
+            this.selectedApis.remove(name);
+
         }
     }
 
     private void actionPerformed() {
-        if (this.catFactsApi.isSelected()) {
-            selectedApis.add("Cat Facts");
-        }
-        if (this.jokesApi.isSelected()) {
-            selectedApis.add("Jokes");
-        }
-        if (this.numbersApi.isSelected()) {
-            selectedApis.add("Numbers");
-        }
-        if (this.activitiesApi.isSelected()) {
-            selectedApis.add("Activities");
-        }
-        if (this.randomDogApi.isSelected()) {
-            selectedApis.add("Random Dog Image");
-        }
-
-        if (selectedApis.size() >= 3) {
-            String message = selectedApis.stream()
-                    .collect(Collectors.joining("\n", "", "\n-----------------\nTotal: " + selectedApis.size()));
-            JOptionPane.showMessageDialog(this, message);
-
-        }
+//        if (this.catFactsApi.isSelected()) {
+//            selectedApis.add("Cat Facts");
+//        }
+//        if (this.jokesApi.isSelected()) {
+//            selectedApis.add("Jokes");
+//        }
+//        if (this.numbersApi.isSelected()) {
+//            selectedApis.add("Numbers");
+//        }
+//        if (this.activitiesApi.isSelected()) {
+//            selectedApis.add("Activities");
+//        }
+//        if (this.randomDogApi.isSelected()) {
+//            selectedApis.add("Random Dog Image");
+//        }
+//
+//        if (selectedApis.size() >= 3) {
+//            String message = selectedApis.stream()
+//                    .collect(Collectors.joining("\n", "", "\n-----------------\nTotal: " + selectedApis.size()));
+//            JOptionPane.showMessageDialog(this, message);
+//
+//        }
 
     }
 
