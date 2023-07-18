@@ -182,7 +182,7 @@ this.historyActivities =new ArrayList<>();
         try {
             execute(sendMessage);
             System.out.println(sendMessage);
-            getRecentInteractions("chat id: "+chatId+"Name: "+this.chatIds.get(chatId)+"  Date: ");
+            getRecentInteractions("Name: "+this.chatIds.get(chatId)+"\nAPI Used: "+update.getCallbackQuery().getData()+ ", Date: ");
 
 
         } catch (TelegramApiException e) {
@@ -219,7 +219,6 @@ this.historyActivities =new ArrayList<>();
                 this.panel.setTotalRequestsNumberText(String.valueOf(this.counterMap.values().stream().reduce(Integer::sum).orElse(0)));
                 this.panel.setMostPopularActivityName(set());
                 this.panel.setTotalUsersNumberText(String.valueOf(this.chatIds.size()));
-                System.out.println(this.chatIds.get(get())+"fffffffffff"+get());
                 this.panel.setMostActiveUserNameText(this.chatIds.get(get()));
                 this.panel.setTextHistoryArea(getHistoryText());
             }
@@ -258,9 +257,11 @@ this.historyActivities =new ArrayList<>();
 
     private String getHistoryText(){
         String text="";
+        int index = 1;
         for (String i: this.historyActivities ) {
             if (i!=null){
-                text+=i+"\n";
+                text+=index+") "+i+"\n\n";
+                index++;
             }else {
                 System.out.println("break");
 
