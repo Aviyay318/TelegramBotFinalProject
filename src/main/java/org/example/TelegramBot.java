@@ -23,12 +23,14 @@ import java.util.stream.IntStream;
 
 public class TelegramBot  extends TelegramLongPollingBot {
     private Map<Long,String> chatIds;
+    private List<Message> messageHistory;
     private HashMap<Long,Integer> mostUserP;
     private List<String> api;
     private ApiManager apiManager;
     private HashMap<String,Integer> counterMap;
-    private Queue<String> activityHistory;
-
+    private List<String> historyActivities;
+    private Thread chartThread;
+    private InteractionChart chart;
     private int counter;
     private Panel panel;
 
@@ -47,13 +49,12 @@ public class TelegramBot  extends TelegramLongPollingBot {
         this.chartThread = new Thread(this.chart);
         this.chartThread.start();
         this.mostUserP = new HashMap<>();
-        this.activityHistory = new ConcurrentLinkedQueue<>();
-        // this.counterMap.put("general",0);
+        this.messageHistory = new ArrayList<>();
+
         this.panel = panel;
         update();
-
-
         this.counter = 0;
+this.historyActivities =new ArrayList<>();
     }
     public void updateApiList(List<String> api){
         this.api = api;
@@ -76,20 +77,42 @@ public class TelegramBot  extends TelegramLongPollingBot {
         long chatId= getChatID(update);
         sendMessage.setChatId(chatId);
         sendPhoto.setChatId(chatId);
-        int sum;
-        try {
-            sum = this.mostUserP.get(chatId) + 1;
-        }catch (Exception e){
-            sum = 0;
+//        int sum;
+//        try {
+//            sum = this.mostUserP.get(chatId) + 1;
+//        }catch (Exception e){
+//            sum = 0;
+//        }
+//        long timestamp = update.getMessage().getDate(); // הערך בתוך timestamp באופן Unix timestamp
+//        Instant instant = Instant.ofEpochSecond(timestamp); // המרת הערך לאובייקט Instant
+//        LocalDateTime date = LocalDateTime.ofInstant(instant, ZoneId.systemDefault()); // המרת הערך לתאריך מקומי באזור המערכת
+//        System.out.println(date); // הדפסת התאריך בפורמט של LocalDateTime
+//        String name = update.getMessage().getFrom().getFirstName();
+//        LocalDateTime timestamp = LocalDateTime.ofInstant(
+//                Instant.ofEpochSecond(update.getMessage().getDate()),
+//                ZoneId.systemDefault()
+//        );
+//        Message message = new Message(chatId, timestamp, name);
+//        messageHistory.add(message);
+//      //  System.out.println(getRecentInteractions());
+
+//
+        //      this.mostUserP.put(chatId,sum);
+        if (this.chatIds.containsKey(chatId)){
+            int count = this.mostUserP.get(chatId);
+            count++;
+            this.mostUserP.put(chatId,count);
+        }else {
+            this.mostUserP.put(chatId,1);
         }
-        this.mostUserP.put(chatId,sum);
-        if (!this.chatIds.containsKey(chatId)){
+        if (update.getMessage()!=null){
             counter = this.counterMap.get("general")+1;
             this.counterMap.put("general",counter);
-            this.chatIds.put(chatId,update.getMessage().getFrom().getFirstName() );
-            sendMessage.setText("Choose Api: ");
-            List<String> apiList =this.api;
-            List<InlineKeyboardButton> buttons = IntStream.range(0, 5)
+            this.chatIds.put(chatId,update.getMessage().getFrom().getFirstName());
+            System.out.println(this.chatIds);
+             sendMessage.setText("Choose Api: ");
+
+            List<InlineKeyboardButton> buttons = IntStream.range(0, this.api.size())
                     .mapToObj(i -> {
                         InlineKeyboardButton button = new InlineKeyboardButton(this.api.get(i));
                         button.setCallbackData(this.api.get(i));
@@ -102,9 +125,30 @@ public class TelegramBot  extends TelegramLongPollingBot {
             InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
             inlineKeyboardMarkup.setKeyboard(keyboard);
 
+//            List<KeyboardButton> buttons = this.api.stream().map(KeyboardButton::new).toList();
+//            ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+//            List<KeyboardRow> keyboardRowsList = new ArrayList<>();
+//
+//            KeyboardRow keyboardRow = new KeyboardRow();
+//            KeyboardRow keyboardRow1 = new KeyboardRow();
+//            KeyboardRow keyboardRow2 = new KeyboardRow();
+//
+//            keyboardRow.add(buttons.get(0));
+//            keyboardRow1.add(buttons.get(1));
+//            keyboardRow2.add(buttons.get(2));
+//
+//            keyboardRowsList.add(keyboardRow);
+//            keyboardRowsList.add(keyboardRow1);
+//            keyboardRowsList.add(keyboardRow2);
+//
+//            replyKeyboardMarkup.setKeyboard(keyboardRowsList);
+//
+//            sendMessage.setReplyMarkup(replyKeyboardMarkup);
+//            sendPhoto.setReplyMarkup(replyKeyboardMarkup);
+
             sendMessage.setReplyMarkup(inlineKeyboardMarkup);
             sendPhoto.setReplyMarkup(inlineKeyboardMarkup);
-        } else {
+        }else {
             if(update.getCallbackQuery().getData().equals("Cat Facts")){
                 counter = this.counterMap.get("Cat Facts")+1;
                 this.counterMap.put("Cat Facts",counter);
@@ -131,10 +175,15 @@ public class TelegramBot  extends TelegramLongPollingBot {
                 this.counterMap.put("Numbers",counter);
                 sendMessage.setText(this.apiManager.numberApi());
             }
+
         }
+        System.out.println(this.counterMap);
+
         try {
             execute(sendMessage);
             System.out.println(sendMessage);
+            getRecentInteractions("chat id: "+chatId+"Name: "+this.chatIds.get(chatId)+"  Date: ");
+
 
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
@@ -149,7 +198,11 @@ public class TelegramBot  extends TelegramLongPollingBot {
             System.out.println(sendPhoto);
         }
 
-        System.out.println(this.counterMap);
+
+    }
+    public List<Message> getRecentInteractions() {
+        int endIndex = Math.min(10, messageHistory.size());
+        return messageHistory.subList(messageHistory.size() - endIndex, messageHistory.size());
     }
     public long getChatID(Update update){
         long update1=0;
@@ -166,7 +219,9 @@ public class TelegramBot  extends TelegramLongPollingBot {
                 this.panel.setTotalRequestsNumberText(String.valueOf(this.counterMap.values().stream().reduce(Integer::sum).orElse(0)));
                 this.panel.setMostPopularActivityName(set());
                 this.panel.setTotalUsersNumberText(String.valueOf(this.chatIds.size()));
+                System.out.println(this.chatIds.get(get())+"fffffffffff"+get());
                 this.panel.setMostActiveUserNameText(this.chatIds.get(get()));
+                this.panel.setTextHistoryArea(getHistoryText());
             }
 
         }).start();
@@ -188,6 +243,32 @@ public class TelegramBot  extends TelegramLongPollingBot {
                     .orElse("No activity found");
         }
     }
+    public void getRecentInteractions(String info) {
+           if (this.historyActivities.size()<10){
+                 this.historyActivities.add(info);
+           }else {
+               this.historyActivities.subList(0, this.historyActivities.size() - 10).clear();
+           }
+    }
+
+
+
+
+
+
+    private String getHistoryText(){
+        String text="";
+        for (String i: this.historyActivities ) {
+            if (i!=null){
+                text+=i+"\n";
+            }else {
+                System.out.println("break");
+
+            }
+        }
+        return text;
+    }
+
 
     public void initialUsers() {
         this.chatIds.clear();
