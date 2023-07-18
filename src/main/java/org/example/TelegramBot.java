@@ -228,10 +228,6 @@ public class TelegramBot  extends TelegramLongPollingBot {
     }
 
 
-    public void initialUsers() {
-      //  this.chatIds.clear();
-    }
-
     public HashMap<String, Integer> getCounterMap() {
         return counterMap;
     }

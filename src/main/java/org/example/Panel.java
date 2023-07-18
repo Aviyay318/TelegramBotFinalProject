@@ -364,8 +364,7 @@ public class Panel extends JPanel {
         this.setApi.addActionListener(event -> {
             initializeBot();
             this.isBotInitialized = true;
-            this.wtfIsThisShit.updateApiList(this.selectedApis);
-            this.wtfIsThisShit.initialUsers();
+            this.telegramBot.updateApiList(this.selectedApis);
         });
     }
 
