@@ -30,30 +30,32 @@ public class TelegramBot  extends TelegramLongPollingBot {
     private List<String> historyActivities;
     private Thread chartThread;
     private InteractionChart chart;
-    private int counter;
     private Panel panel;
 
     public TelegramBot(List<String> api,Panel panel){
         this.chatIds = new HashMap<>();
         this.api = api;
         this.apiManager = new ApiManager();
-        this.counterMap = new HashMap<>();
-        this.counterMap.put("general",0);
-        this.counterMap.put("Cat Facts",0);
-        this.counterMap.put("Jokes",0);
-        this.counterMap.put("Activities",0);
-        this.counterMap.put("Numbers",0);
-        this.counterMap.put("Random Dog",0);
+        createCounterMap();
         this.chart = new InteractionChart(this);
         this.chartThread = new Thread(this.chart);
         this.chartThread.start();
         this.mostUserP = new HashMap<>();
-
         this.panel = panel;
         update();
-        this.counter = 0;
         this.historyActivities =new ArrayList<>();
     }
+
+    private void createCounterMap() {
+        this.counterMap = new HashMap<>();
+        this.counterMap.put("Massage",0);
+        this.counterMap.put(Constants.API_CAT_FACT,0);
+        this.counterMap.put(Constants.API_JOKES,0);
+        this.counterMap.put(Constants.API_ACTIVITIES,0);
+        this.counterMap.put(Constants.API_NUMBERS,0);
+        this.counterMap.put(Constants.API_RANDOM_DOG,0);
+    }
+
     public void updateApiList(List<String> api){
         this.api = api;
     }
@@ -69,13 +71,14 @@ public class TelegramBot  extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        int counter = 0;
+        int counter ;
         SendMessage sendMessage= new SendMessage();
         SendPhoto sendPhoto = new SendPhoto();
         long chatId= getChatID(update);
         sendMessage.setChatId(chatId);
         sendPhoto.setChatId(chatId);
-        long timestamp = 0;
+        long timestamp ;
+        ZonedDateTime date = null;
         Message message = update.getMessage();
         CallbackQuery callbackQuery = update.getCallbackQuery();
 
@@ -88,8 +91,8 @@ public class TelegramBot  extends TelegramLongPollingBot {
         }
         if (update.getMessage()!=null){
             timestamp = message.getDate();
-            counter = this.counterMap.get("general")+1;
-            this.counterMap.put("general",counter);
+            counter = this.counterMap.get("Massage")+1;
+            this.counterMap.put("Massage",counter);
             this.chatIds.put(chatId,message.getFrom().getFirstName());
             System.out.println(this.chatIds);
             sendMessage.setText("Choose Api: ");
@@ -110,51 +113,46 @@ public class TelegramBot  extends TelegramLongPollingBot {
             sendMessage.setReplyMarkup(inlineKeyboardMarkup);
             sendPhoto.setReplyMarkup(inlineKeyboardMarkup);
         }else {
-            timestamp = update.getCallbackQuery().getMessage().getDate();
-            System.out.println();
-            if(update.getCallbackQuery().getData().equals("Cat Facts")){
-                counter = this.counterMap.get("Cat Facts")+1;
-                this.counterMap.put("Cat Facts",counter);
+            timestamp=callbackQuery.getMessage().getDate();
+            if(update.getCallbackQuery().getData().equals(Constants.API_CAT_FACT)){
+                counter = this.counterMap.get(Constants.API_CAT_FACT)+1;
+                this.counterMap.put(Constants.API_CAT_FACT,counter);
                 sendMessage.setText(this.apiManager.catsFactApi());
-            } else if (update.getCallbackQuery().getData().equals("Jokes")){
-                counter = this.counterMap.get("Jokes")+1;
-                this.counterMap.put("Jokes",counter);
+            } else if (update.getCallbackQuery().getData().equals(Constants.API_JOKES)){
+                counter = this.counterMap.get(Constants.API_JOKES)+1;
+                this.counterMap.put(Constants.API_JOKES,counter);
                 sendMessage.setText(this.apiManager.jokeApi("Any"));
-            } else if (update.getCallbackQuery().getData().equals("Activities")){
-                counter = this.counterMap.get("Activities")+1;
-                this.counterMap.put("Activities",counter);
+            } else if (update.getCallbackQuery().getData().equals(Constants.API_ACTIVITIES)){
+                counter = this.counterMap.get(Constants.API_ACTIVITIES)+1;
+                this.counterMap.put(Constants.API_ACTIVITIES,counter);
                 sendMessage.setText(this.apiManager.activitiesApi());
-            }else if (update.getCallbackQuery().getData().equals("Random Dog")){
-                counter = this.counterMap.get("Random Dog")+1;
-                this.counterMap.put("Random Dog",counter);
+            }else if (update.getCallbackQuery().getData().equals(Constants.API_RANDOM_DOG)){
+                counter = this.counterMap.get(Constants.API_RANDOM_DOG)+1;
+                this.counterMap.put(Constants.API_RANDOM_DOG,counter);
                 this.apiManager.dogApi();
                 File file = new File("res/dog/randomDog.jpg");
                 System.out.println(file.getName());
                 InputFile randomAhhDog = new InputFile(file);
                 sendPhoto.setPhoto(randomAhhDog);
             }
-            else {
-                counter = this.counterMap.get("Numbers")+1;
-                this.counterMap.put("Numbers",counter);
+            else{
+                counter = this.counterMap.get(Constants.API_NUMBERS)+1;
+                this.counterMap.put(Constants.API_NUMBERS,counter);
                 sendMessage.setText(this.apiManager.numberApi());
             }
-
+            if (update.hasCallbackQuery()){
+                ZonedDateTime currentTime = ZonedDateTime.now();
+                date = currentTime;
+            }
         }
-
-
         try {
             execute(sendMessage);
-            System.out.println(sendMessage);
-
-
 
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
         }
 
         finally {
-            Instant instant = Instant.ofEpochSecond(timestamp); // המרת הערך לאובייקט Instant
-            LocalDateTime date = LocalDateTime.ofInstant(instant, ZoneId.systemDefault()); // המרת הערך לתאריך מקומי באזור המערכת
 
             assert date != null;
             getRecentInteractions("Name: "+this.chatIds.get(chatId)+" API Used: "+update.getCallbackQuery().getData()+ "\nDate: "+ date.format(DateTimeFormatter.ISO_LOCAL_DATE) + " /" + date.format(DateTimeFormatter.ISO_LOCAL_TIME));
@@ -169,6 +167,8 @@ public class TelegramBot  extends TelegramLongPollingBot {
 
 
     }
+
+
 
     public long getChatID(Update update){
         long update1=0;
@@ -203,7 +203,7 @@ public class TelegramBot  extends TelegramLongPollingBot {
         } else {
             return counterMap.entrySet()
                     .stream()
-                    .max(Map.Entry.comparingByValue()).filter(stringIntegerEntry -> !stringIntegerEntry.getKey().equals("general"))
+                    .max(Map.Entry.comparingByValue())
                     .map(Map.Entry::getKey)
                     .orElse("No activity found");
         }
@@ -214,12 +214,6 @@ public class TelegramBot  extends TelegramLongPollingBot {
         }
         this.historyActivities.add(info);
     }
-
-
-
-
-
-
 
 
     private String getHistoryText(){
@@ -235,7 +229,7 @@ public class TelegramBot  extends TelegramLongPollingBot {
 
 
     public void initialUsers() {
-        this.chatIds.clear();
+      //  this.chatIds.clear();
     }
 
     public HashMap<String, Integer> getCounterMap() {
