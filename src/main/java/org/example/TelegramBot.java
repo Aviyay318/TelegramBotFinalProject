@@ -7,10 +7,7 @@ import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.File;
@@ -48,12 +45,11 @@ public class TelegramBot  extends TelegramLongPollingBot {
         this.chartThread = new Thread(this.chart);
         this.chartThread.start();
         this.mostUserP = new HashMap<>();
-        this.messageHistory = new ArrayList<>();
 
         this.panel = panel;
         update();
         this.counter = 0;
-this.historyActivities =new ArrayList<>();
+        this.historyActivities =new ArrayList<>();
     }
     public void updateApiList(List<String> api){
         this.api = api;
@@ -93,7 +89,7 @@ this.historyActivities =new ArrayList<>();
             this.counterMap.put("general",counter);
             this.chatIds.put(chatId,message.getFrom().getFirstName());
             System.out.println(this.chatIds);
-             sendMessage.setText("Choose Api: ");
+            sendMessage.setText("Choose Api: ");
 
             List<InlineKeyboardButton> buttons = IntStream.range(0, this.api.size())
                     .mapToObj(i -> {
@@ -107,27 +103,6 @@ this.historyActivities =new ArrayList<>();
             keyboard.add(buttons);
             InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
             inlineKeyboardMarkup.setKeyboard(keyboard);
-
-//            List<KeyboardButton> buttons = this.api.stream().map(KeyboardButton::new).toList();
-//            ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
-//            List<KeyboardRow> keyboardRowsList = new ArrayList<>();
-//
-//            KeyboardRow keyboardRow = new KeyboardRow();
-//            KeyboardRow keyboardRow1 = new KeyboardRow();
-//            KeyboardRow keyboardRow2 = new KeyboardRow();
-//
-//            keyboardRow.add(buttons.get(0));
-//            keyboardRow1.add(buttons.get(1));
-//            keyboardRow2.add(buttons.get(2));
-//
-//            keyboardRowsList.add(keyboardRow);
-//            keyboardRowsList.add(keyboardRow1);
-//            keyboardRowsList.add(keyboardRow2);
-//
-//            replyKeyboardMarkup.setKeyboard(keyboardRowsList);
-//
-//            sendMessage.setReplyMarkup(replyKeyboardMarkup);
-//            sendPhoto.setReplyMarkup(replyKeyboardMarkup);
 
             sendMessage.setReplyMarkup(inlineKeyboardMarkup);
             sendPhoto.setReplyMarkup(inlineKeyboardMarkup);
@@ -175,6 +150,11 @@ this.historyActivities =new ArrayList<>();
         }
 
         finally {
+            Instant instant = Instant.ofEpochSecond(timestamp); // המרת הערך לאובייקט Instant
+            LocalDateTime date = LocalDateTime.ofInstant(instant, ZoneId.systemDefault()); // המרת הערך לתאריך מקומי באזור המערכת
+
+            getRecentInteractions("Name: "+this.chatIds.get(chatId)+" API Used: "+update.getCallbackQuery().getData()+ "\nDate: "+date);
+
             try {
                 execute(sendPhoto);
             } catch (TelegramApiException e) {
@@ -242,8 +222,8 @@ this.historyActivities =new ArrayList<>();
         String text="";
         int index = 1;
         for (String i: this.historyActivities ) {
-                text+=index+") "+i+"\n\n";
-                index++;
+            text+=index+") "+i+"\n\n";
+            index++;
 
         }
         return text;

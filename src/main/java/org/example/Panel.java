@@ -13,9 +13,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Panel extends JPanel {
     private int x;
@@ -361,7 +359,6 @@ public class Panel extends JPanel {
         this.setApi.setBounds(this.randomDogApi.getX()+180,this.randomDogApi.getY()-110,180,60);
         this.setApi.setFont(this.font.deriveFont(18f));
         this.setApi.setOpaque(false);
-        //this.setApi.setContentAreaFilled(false);
         this.setApi.setForeground(Color.BLACK);
         this.add(this.setApi);
         this.setApi.addActionListener(event -> {
