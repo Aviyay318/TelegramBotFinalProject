@@ -7,6 +7,8 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import javax.swing.*;
 
 public class Window extends JFrame {
+    private Panel panel;
+    private Thread rePainter;
     public Window() {
         this.setSize(Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
         this.setResizable(false);
@@ -14,7 +16,20 @@ public class Window extends JFrame {
         this.setLocationRelativeTo(null);
         this.setTitle("Telegram Bot Manager");
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.add(new Panel(0, 0, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT));
+        this.panel = new Panel(0, 0, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
+        this.add(this.panel);
+        this.rePainter = new Thread(()->{
+           while(true){
+               try {
+                   Thread.sleep(1000);
+               } catch (InterruptedException e) {
+                   throw new RuntimeException(e);
+               }
+
+               repaint();
+           }
+        });
+        this.rePainter.start();
         this.setVisible(true);
 
     }
