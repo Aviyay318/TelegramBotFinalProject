@@ -26,7 +26,7 @@ public class InteractionChart implements  Runnable{
     }
 
     public void run(){
-        while(true){
+        while(true) {
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
@@ -34,44 +34,48 @@ public class InteractionChart implements  Runnable{
             }
             //System.out.println(this.chart.getConfig());
             try {
-                this.chart.setConfig(
-                        """
-                        {
-                        "type": "outlabeledPie",
-                        "data": {
-                    "labels": ["Cat Facts", "Jokes", "Numbers", "Activities", "Random Dog"],
-                    "datasets": [{
-                    "backgroundColor": ["#FF3784", "#36A2EB", "#4BC0C0", "#F77825", "#9966FF"],
-                    """
-                                +
-                                """
-                                "data": [
-                                """
-                                + this.interactionMap.get(Constants.API_CAT_FACT)+", "+this.interactionMap.get(Constants.API_JOKES)+", "+ this.interactionMap.get(Constants.API_NUMBERS)+", "+ this.interactionMap.get(Constants.API_ACTIVITIES)+", "+ this.interactionMap.get(Constants.API_RANDOM_DOG)+ "]" +
-                                """
-                                
-                                }]
-                            },
-                            "options": {
-                                "plugins": {
-                                    "legend": true,
-                                            "outlabels": {
-                                        "text": "%l %p",
-                                                "color": "white",
-                                                "stretch": 30,
-                                                "font": {
-                                            "resizable": true,
-                                                    "minSize": 12,
-                                                    "maxSize": 18
-                                        }
-                                    }
-                                }
-                            }
-                }""");
-                this.chart.toFile("res/chart.png");
+                if (this.interactionMap.get(Constants.API_CAT_FACT) > 0 || this.interactionMap.get(Constants.API_JOKES) > 0 || this.interactionMap.get(Constants.API_NUMBERS) > 0 || this.interactionMap.get(Constants.API_ACTIVITIES) > 0 || this.interactionMap.get(Constants.API_RANDOM_DOG) > 0) {
+                    this.chart.setConfig(
+                            """
+                                        {
+                                        "type": "outlabeledPie",
+                                        "data": {
+                                    "labels": ["Cat Facts", "Jokes", "Numbers", "Activities", "Random Dog"],
+                                    "datasets": [{
+                                    "backgroundColor": ["#FF3784", "#36A2EB", "#4BC0C0", "#F77825", "#9966FF"],
+                                    """
+                                    +
+                                    """
+                                            "data": [
+                                            """
+                                    + this.interactionMap.get(Constants.API_CAT_FACT) + ", " + this.interactionMap.get(Constants.API_JOKES) + ", " + this.interactionMap.get(Constants.API_NUMBERS) + ", " + this.interactionMap.get(Constants.API_ACTIVITIES) + ", " + this.interactionMap.get(Constants.API_RANDOM_DOG) + "]" +
+                                    """
+                                                            
+                                                            }]
+                                                        },
+                                                        "options": {
+                                                            "plugins": {
+                                                                "legend": true,
+                                                                        "outlabels": {
+                                                                    "text": "%l %p",
+                                                                            "color": "white",
+                                                                            "stretch": 30,
+                                                                            "font": {
+                                                                        "resizable": true,
+                                                                                "minSize": 12,
+                                                                                "maxSize": 18
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                            }""");
+
+                    this.chart.toFile("res/chart.png");
+                }
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+
 
         }
 

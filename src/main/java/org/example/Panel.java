@@ -172,7 +172,7 @@ public class Panel extends JPanel {
 
     private void totalUsersLabel(){
         JLabel totalUsers=new JLabel("Total Users Used The Bot: ");
-        totalUsers.setBounds(this.totalUsersNumber.getX()-320,this.totalUsersNumber.getY(),this.totalUsersNumber.getWidth()+Constants.SPACING,this.totalUsersNumber.getHeight());
+        totalUsers.setBounds(this.totalUsersNumber.getX()-260,this.totalUsersNumber.getY(),this.totalUsersNumber.getWidth()+Constants.SPACING,this.totalUsersNumber.getHeight());
         totalUsers.setFont(this.font.deriveFont(Constants.FONT_SIZE));
         totalUsers.setOpaque(false);
         this.add(totalUsers);
@@ -190,7 +190,7 @@ public class Panel extends JPanel {
     }
     private void mostActiveUserLabel(){
         JLabel mostActiveUser=new JLabel("Most Active User: ");
-        mostActiveUser.setBounds(this.totalUsersNumber.getX()-320,this.totalUsersNumber.getY()+Constants.Y_LABEL_SPACING,this.totalUsersNumber.getWidth(),this.totalUsersNumber.getHeight());
+        mostActiveUser.setBounds(this.totalUsersNumber.getX()-260,this.totalUsersNumber.getY()+Constants.Y_LABEL_SPACING,this.totalUsersNumber.getWidth(),this.totalUsersNumber.getHeight());
         mostActiveUser.setFont(this.font.deriveFont(Constants.FONT_SIZE));
         mostActiveUser.setOpaque(false);
         this.add(mostActiveUser);
@@ -207,7 +207,7 @@ public class Panel extends JPanel {
     }
     private void mostPopularActivityLabel(){
         JLabel mostPopularActivity=new JLabel("Most Popular API: ");
-        mostPopularActivity.setBounds(this.mostPopularActivityName.getX()-320,this.mostPopularActivityName.getY(),this.mostPopularActivityName.getWidth(),this.mostPopularActivityName.getHeight());
+        mostPopularActivity.setBounds(this.mostPopularActivityName.getX()-260,this.mostPopularActivityName.getY(),this.mostPopularActivityName.getWidth(),this.mostPopularActivityName.getHeight());
         mostPopularActivity.setFont(this.font.deriveFont(Constants.FONT_SIZE));
         mostPopularActivity.setOpaque(false);
 

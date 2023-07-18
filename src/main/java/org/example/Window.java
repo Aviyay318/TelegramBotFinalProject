@@ -12,6 +12,7 @@ public class Window extends JFrame {
     private Thread rePainter;
     private File chart;
     public Window() {
+
         this.setSize(Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
         this.setResizable(false);
         this.setLayout(null);

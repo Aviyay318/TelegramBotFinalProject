@@ -29,7 +29,7 @@ public class Constants {
 
     public static final int SPACING=50;
 
-    public static final int FIRST_NUMBER_X=360;
+    public static final int FIRST_NUMBER_X=300;
     public static final int FIRST_NUMBER_Y=220;
     public static final int FIRST_NUMBER_WIDTH=200;
     public static final int FIRST_NUMBER_HEIGHT=100;
@@ -37,7 +37,7 @@ public class Constants {
     public static final float FONT_SIZE= 17f;
 
     public static final int CHECKBOX_X= STATISTICS_X;
-    public static final int CHECKBOX_Y=600;
+    public static final int CHECKBOX_Y=620;
 
     public static final int API_CHOOSER_LABEL_X = STATISTICS_X;
     public static final int API_CHOOSER_LABEL_Y = 520;
