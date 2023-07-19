@@ -1,6 +1,5 @@
 package org.example;
 
-import org.checkerframework.checker.units.qual.C;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
@@ -36,7 +35,7 @@ public class Panel extends JPanel {
     private boolean canSelectMore;
 
     private TelegramBotsApi botsApi;
-    private TelegramBot wtfIsThisShit;
+    private TelegramBot telegramBot;
     private boolean isBotInitialized;
     private JLabel apiChooserLabel;
     private List<String> selectedApis;
@@ -346,8 +345,8 @@ public class Panel extends JPanel {
         if(!this.isBotInitialized){
             try {
                 this.botsApi = new TelegramBotsApi(DefaultBotSession.class);
-                this.wtfIsThisShit = new TelegramBot(this.selectedApis,this);
-                this.botsApi.registerBot(this.wtfIsThisShit);
+                this.telegramBot = new TelegramBot(this.selectedApis,this);
+                this.botsApi.registerBot(this.telegramBot);
             }catch (TelegramApiException e){
                 throw new RuntimeException();
             }
