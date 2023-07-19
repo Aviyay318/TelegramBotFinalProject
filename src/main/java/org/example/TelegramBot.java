@@ -43,7 +43,7 @@ public class TelegramBot  extends TelegramLongPollingBot {
 
     private void createCounterMap() {
         this.counterMap = new HashMap<>();
-        this.counterMap.put("Massage",0);
+        this.counterMap.put("Message",0);
         this.counterMap.put(Constants.API_CAT_FACT,0);
         this.counterMap.put(Constants.API_JOKES,0);
         this.counterMap.put(Constants.API_ACTIVITIES,0);
@@ -84,10 +84,9 @@ public class TelegramBot  extends TelegramLongPollingBot {
         }
         if (update.getMessage()!=null){
             timestamp = message.getDate();
-            counter = this.counterMap.get("Massage")+1;
-            this.counterMap.put("Massage",counter);
+            counter = this.counterMap.get("Message")+1;
+            this.counterMap.put("Message",counter);
             sendMessage.setText("Choose Api: ");
-
             List<InlineKeyboardButton> buttons = IntStream.range(0, this.api.size())
                     .mapToObj(i -> {
                         InlineKeyboardButton button = new InlineKeyboardButton(this.api.get(i));
@@ -138,13 +137,10 @@ public class TelegramBot  extends TelegramLongPollingBot {
         }
         try {
             execute(sendMessage);
-
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
         }
-
         finally {
-
             assert date != null;
             getRecentInteractions("Name: "+ getResponder(chatId).getUserName()+" API Used: "+update.getCallbackQuery().getData()+ "\nDate: "+ date.format(DateTimeFormatter.ISO_LOCAL_DATE) + " /" + date.format(DateTimeFormatter.ISO_LOCAL_TIME));
 
@@ -153,10 +149,7 @@ public class TelegramBot  extends TelegramLongPollingBot {
             } catch (TelegramApiException e) {
                 throw new RuntimeException(e);
             }
-            //System.out.println(sendPhoto);
         }
-
-
     }
 
     private Responder getResponder(Long chatId) {
