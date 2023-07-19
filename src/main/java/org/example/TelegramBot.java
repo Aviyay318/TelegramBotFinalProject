@@ -176,7 +176,7 @@ public class TelegramBot  extends TelegramLongPollingBot {
         }).start();
     }
     private String getMostPopularUser() {
-        Responder mostPopular = responders.stream()
+        Responder mostPopular = responders.stream().filter(Objects::nonNull)
                 .max(Comparator.comparingLong(Responder::getUses))
                 .orElse(null);
 
