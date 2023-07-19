@@ -99,7 +99,6 @@ public class TelegramBot  extends TelegramLongPollingBot {
             keyboard.add(buttons);
             InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
             inlineKeyboardMarkup.setKeyboard(keyboard);
-
             sendMessage.setReplyMarkup(inlineKeyboardMarkup);
             sendPhoto.setReplyMarkup(inlineKeyboardMarkup);
         }else {
