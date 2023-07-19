@@ -12,9 +12,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.File;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -22,8 +19,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class TelegramBot  extends TelegramLongPollingBot {
-    private Map<Long,String> chatIds;
-    private HashMap<Long,Integer> mostUserP;
     private List<String> api;
     private ApiManager apiManager;
     private HashMap<String,Integer> counterMap;
@@ -31,16 +26,16 @@ public class TelegramBot  extends TelegramLongPollingBot {
     private Thread chartThread;
     private InteractionChart chart;
     private Panel panel;
+    private List<Responder> responders;
 
     public TelegramBot(List<String> api,Panel panel){
-        this.chatIds = new HashMap<>();
+        this.responders = new ArrayList<>();
         this.api = api;
         this.apiManager = new ApiManager();
         createCounterMap();
         this.chart = new InteractionChart(this);
         this.chartThread = new Thread(this.chart);
         this.chartThread.start();
-        this.mostUserP = new HashMap<>();
         this.panel = panel;
         update();
         this.historyActivities =new ArrayList<>();
@@ -81,20 +76,16 @@ public class TelegramBot  extends TelegramLongPollingBot {
         ZonedDateTime date = null;
         Message message = update.getMessage();
         CallbackQuery callbackQuery = update.getCallbackQuery();
-
-        if (this.chatIds.containsKey(chatId)){
-            int count = this.mostUserP.get(chatId);
-            count++;
-            this.mostUserP.put(chatId,count);
+        if (!responders.stream().anyMatch(responder -> responder.getChatId() == chatId)){
+            Responder responder = new Responder(chatId,message.getFrom().getFirstName());
+            this.responders.add(responder);
         }else {
-            this.mostUserP.put(chatId,1);
+         getResponder(chatId).updateUses();
         }
         if (update.getMessage()!=null){
             timestamp = message.getDate();
             counter = this.counterMap.get("Massage")+1;
             this.counterMap.put("Massage",counter);
-            this.chatIds.put(chatId,message.getFrom().getFirstName());
-            System.out.println(this.chatIds);
             sendMessage.setText("Choose Api: ");
 
             List<InlineKeyboardButton> buttons = IntStream.range(0, this.api.size())
@@ -155,7 +146,7 @@ public class TelegramBot  extends TelegramLongPollingBot {
         finally {
 
             assert date != null;
-            getRecentInteractions("Name: "+this.chatIds.get(chatId)+" API Used: "+update.getCallbackQuery().getData()+ "\nDate: "+ date.format(DateTimeFormatter.ISO_LOCAL_DATE) + " /" + date.format(DateTimeFormatter.ISO_LOCAL_TIME));
+            getRecentInteractions("Name: "+ getResponder(chatId).getUserName()+" API Used: "+update.getCallbackQuery().getData()+ "\nDate: "+ date.format(DateTimeFormatter.ISO_LOCAL_DATE) + " /" + date.format(DateTimeFormatter.ISO_LOCAL_TIME));
 
             try {
                 execute(sendPhoto);
@@ -168,6 +159,9 @@ public class TelegramBot  extends TelegramLongPollingBot {
 
     }
 
+    private Responder getResponder(Long chatId) {
+        return  this.responders.stream().filter(responder -> responder.getChatId()==chatId).findFirst().get();
+    }
 
 
     public long getChatID(Update update){
@@ -184,19 +178,22 @@ public class TelegramBot  extends TelegramLongPollingBot {
             while (true){
                 this.panel.setTotalRequestsNumberText(String.valueOf(this.counterMap.values().stream().reduce(Integer::sum).orElse(0)));
                 this.panel.setMostPopularActivityName(set());
-                this.panel.setTotalUsersNumberText(String.valueOf(this.chatIds.size()));
-                this.panel.setMostActiveUserNameText(this.chatIds.get(get()));
+                this.panel.setTotalUsersNumberText(String.valueOf(this.responders.size()));
+                this.panel.setMostActiveUserNameText(getMostPopularUser());
                 this.panel.setTextHistoryArea(getHistoryText());
             }
 
         }).start();
     }
-    private  Long get(){
-        return new HashMap<>(this.mostUserP).entrySet().stream()
-                .max(Map.Entry.comparingByValue())
-                .map(Map.Entry::getKey)
-                .orElse(0L);
+    private String getMostPopularUser() {
+        Responder mostPopular = responders.stream()
+                .max(Comparator.comparingLong(Responder::getUses))
+                .orElse(null);
+
+        return mostPopular != null ? mostPopular.getUserName() : null;
     }
+
+
     private String set(){
         if(this.counterMap.values().stream().reduce(Integer::sum).orElse(0)==0){
             return  "No activity found";
