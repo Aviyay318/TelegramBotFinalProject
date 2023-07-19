@@ -72,18 +72,17 @@ public class TelegramBot  extends TelegramLongPollingBot {
         long chatId= getChatID(update);
         sendMessage.setChatId(chatId);
         sendPhoto.setChatId(chatId);
-        long timestamp ;
         ZonedDateTime date = null;
         Message message = update.getMessage();
         CallbackQuery callbackQuery = update.getCallbackQuery();
         if (!responders.stream().anyMatch(responder -> responder.getChatId() == chatId)){
             Responder responder = new Responder(chatId,message.getFrom().getFirstName());
             this.responders.add(responder);
+            System.out.println(this.responders);
         }else {
          getResponder(chatId).updateUses();
         }
         if (update.getMessage()!=null){
-            timestamp = message.getDate();
             counter = this.counterMap.get("Message")+1;
             this.counterMap.put("Message",counter);
             sendMessage.setText("Choose Api: ");
@@ -102,7 +101,6 @@ public class TelegramBot  extends TelegramLongPollingBot {
             sendMessage.setReplyMarkup(inlineKeyboardMarkup);
             sendPhoto.setReplyMarkup(inlineKeyboardMarkup);
         }else {
-            timestamp=callbackQuery.getMessage().getDate();
             if(update.getCallbackQuery().getData().equals(Constants.API_CAT_FACT)){
                 counter = this.counterMap.get(Constants.API_CAT_FACT)+1;
                 this.counterMap.put(Constants.API_CAT_FACT,counter);
@@ -157,13 +155,13 @@ public class TelegramBot  extends TelegramLongPollingBot {
 
 
     public long getChatID(Update update){
-        long update1=0;
+        long chatId;
         if (update.getMessage()!=null){
-            update1=update.getMessage().getChatId();
+            chatId=update.getMessage().getChatId();
         }else {
-            update1=update.getCallbackQuery().getMessage().getChatId();
+            chatId=update.getCallbackQuery().getMessage().getChatId();
         }
-        return update1;
+        return chatId;
     }
     public void update(){
         new Thread(()->{
