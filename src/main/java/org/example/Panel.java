@@ -376,7 +376,6 @@ public class Panel extends JPanel {
             if (this.counterToThree==4){
                 this.canSelectMore = false;
                 checkBox.setSelected(false);
-                System.out.println("fucking");
             }
         }
         if (!checkBox.isSelected()){
