@@ -20,9 +20,6 @@ public class Window extends JFrame {
         this.setTitle("Telegram Bot Manager");
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.chart = new File("res/chart");
-        if(this.getDefaultCloseOperation()==EXIT_ON_CLOSE){
-
-        }
         this.panel = new Panel(0, 0, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
         this.add(this.panel);
         this.rePainter = new Thread(()->{
