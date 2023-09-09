@@ -96,8 +96,6 @@ public class Panel extends JPanel {
         randomDogCheckBox();
         setButton();
 
-
-
     }
 
     private void setNewFont(){

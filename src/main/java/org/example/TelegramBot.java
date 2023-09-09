@@ -80,8 +80,7 @@ public class TelegramBot  extends TelegramLongPollingBot {
             this.responders.add(responder);
             System.out.println(this.responders);
         }else {
-         getResponder(chatId).updateUses();
-        }
+         getResponder(chatId).updateUses();}
         if (update.getMessage()!=null){
             counter = this.counterMap.get("Message")+1;
             this.counterMap.put("Message",counter);
@@ -93,7 +92,6 @@ public class TelegramBot  extends TelegramLongPollingBot {
                         return button;
                     })
                     .collect(Collectors.toList());
-
             List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
             keyboard.add(buttons);
             InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
@@ -120,8 +118,7 @@ public class TelegramBot  extends TelegramLongPollingBot {
                 File file = new File("res/dog/randomDog.jpg");
                 System.out.println(file.getName());
                 InputFile randomAhhDog = new InputFile(file);
-                sendPhoto.setPhoto(randomAhhDog);
-            }
+                sendPhoto.setPhoto(randomAhhDog);}
             else{
                 counter = this.counterMap.get(Constants.API_NUMBERS)+1;
                 this.counterMap.put(Constants.API_NUMBERS,counter);
@@ -129,9 +126,7 @@ public class TelegramBot  extends TelegramLongPollingBot {
             }
             if (update.hasCallbackQuery()){
                 ZonedDateTime currentTime = ZonedDateTime.now();
-                date = currentTime;
-            }
-        }
+                date = currentTime;}}
         try {
             execute(sendMessage);
         } catch (TelegramApiException e) {
@@ -144,9 +139,7 @@ public class TelegramBot  extends TelegramLongPollingBot {
             try {
                 execute(sendPhoto);
             } catch (TelegramApiException e) {
-                throw new RuntimeException(e);
-            }
-        }
+                throw new RuntimeException(e);}}
     }
 
     private Responder getResponder(Long chatId) {
